@@ -1,447 +1,532 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>macaron — マカロン</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>語りと音楽★マカロン</title>
+<meta name="description" content="絵本の読み語りと音楽でつなぐ、参加型おはなし会プログラム。絵本専門士が、子どもから大人まで誰もが安心して楽しめる温かな時間をお届けします。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=Shippori+Mincho:wght@400;500;600&family=Zen+Maru+Gothic:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --paper:   #F7F3EC;
-      --ink:     #2C3E4C;
-      --teal:    #4A7C7E;
-      --salmon:  #D4876A;
-      --sage:    #B5C4B1;
-      --muted:   #7A8D8A;
-      --rule:    rgba(44,62,76,0.15);
-    }
+  /* ロゴから抽出したコーポレートカラー */
+  :root {
+    --cream:    #FBF7F0;   /* 生成りの背景 */
+    --salmon:   #F0A689;   /* マカロンの「マ」 */
+    --sage:     #9BB997;   /* マカロンの「カ」 */
+    --mustard:  #E4BD56;   /* マカロンの「ロ」 */
+    --teal:     #6AB4B3;   /* マカロンの「ン」 */
+    --terra:    #E4AA84;   /* 丸ロゴの地色 */
+    --brown:    #6B5544;   /* 譜面・英字の焦げ茶 */
+    --ink:      #5A4A3E;   /* 本文の文字色 */
+    --rule:     rgba(90,74,62,0.13);
+  }
 
-    html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; }
 
-    body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Shippori Mincho', serif;
-      font-size: 16px;
-      line-height: 1.8;
-    }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.95;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 3rem;
-      background: rgba(247,243,236,0.92);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid var(--rule);
-    }
-    .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem;
-      font-style: italic;
-      letter-spacing: 0.08em;
-      color: var(--teal);
-    }
-    .nav-links {
-      display: flex;
-      gap: 2.2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 300;
-      letter-spacing: 0.12em;
-      color: var(--ink);
-      text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-    }
-    .nav-links a:hover { opacity: 1; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
 
-    /* ─── HERO: 絵本の見開き ─── */
-    .hero {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding-top: 72px;
-      position: relative;
-      overflow: hidden;
-    }
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.8rem;
+    background: rgba(251,247,240,0.80);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid transparent;
+    transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+  }
+  /* スクロールで下がったら背景を濃く・影を添える */
+  nav.scrolled {
+    background: rgba(248,240,230,0.98);
+    border-bottom-color: var(--rule);
+    box-shadow: 0 2px 16px rgba(90,74,62,0.10);
+    padding: 0.6rem 1.8rem;
+  }
+  .nav-logo {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    color: var(--terra);
+    letter-spacing: 0.02em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 0.55rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.85rem;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.38rem 0.95rem;
+    border-radius: 999px;
+    border: 1.5px solid transparent;
+    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    white-space: nowrap;
+  }
+  /* マカロン型ボタン：各セクション対応色を縁取りに */
+  .nav-links a.nav-about    { border-color: var(--salmon); }
+  .nav-links a.nav-tobira   { border-color: var(--sage); }
+  .nav-links a.nav-senmonshi{ border-color: var(--mustard); }
+  .nav-links a.nav-works    { border-color: var(--teal); }
+  .nav-links a.nav-contact  { border-color: var(--terra); }
+  /* ホバー・タップで対応色がふわっと付き、少し浮き上がる */
+  .nav-links a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(90,74,62,0.15);
+  }
+  .nav-links a.nav-about:hover    { background: var(--salmon); color: #fff; }
+  .nav-links a.nav-tobira:hover   { background: var(--sage); color: #fff; }
+  .nav-links a.nav-senmonshi:hover{ background: var(--mustard); color: #fff; }
+  .nav-links a.nav-works:hover    { background: var(--teal); color: #fff; }
+  .nav-links a.nav-contact:hover  { background: var(--terra); color: #fff; }
 
-    /* 左ページ：絵本的なイラストゾーン */
-    .hero-left {
-      background: var(--teal);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-left::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: 
-        radial-gradient(ellipse 60% 50% at 30% 60%, rgba(181,196,177,0.35) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 70% 30%, rgba(212,135,106,0.2) 0%, transparent 60%);
-    }
-    .hero-illustration {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 3rem;
-    }
-    .hero-illustration svg {
-      width: min(280px, 55vw);
-      height: auto;
-      opacity: 0.9;
-    }
-    .hero-caption {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.9rem;
-      font-style: italic;
-      color: rgba(247,243,236,0.7);
-      margin-top: 1.5rem;
-      letter-spacing: 0.1em;
-    }
+  /* ─── HERO ─── */
+  .hero {
+    padding: 8rem 1.5rem 4.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
 
-    /* 右ページ：テキスト */
-    .hero-right {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 4rem 4rem 4rem 4.5rem;
-      position: relative;
-    }
-    .hero-right::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 8%; bottom: 8%;
-      width: 1px;
-      background: var(--rule);
-    }
-    .hero-eyebrow {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.82rem;
-      letter-spacing: 0.2em;
-      color: var(--salmon);
-      margin-bottom: 1.4rem;
-      text-transform: uppercase;
-    }
-    .hero-title-ja {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 500;
-      line-height: 1.5;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-      color: var(--ink);
-    }
-    .hero-title-en {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      font-style: italic;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      margin-bottom: 2.2rem;
-    }
-    .hero-lead {
-      font-size: 0.95rem;
-      line-height: 2;
-      color: var(--ink);
-      opacity: 0.85;
-      max-width: 36ch;
-      margin-bottom: 3rem;
-    }
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.7rem;
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.82rem;
-      letter-spacing: 0.14em;
-      color: var(--teal);
-      text-decoration: none;
-      border-bottom: 1px solid var(--teal);
-      padding-bottom: 0.15rem;
-      width: fit-content;
-      transition: gap 0.25s, color 0.2s;
-    }
-    .hero-cta:hover { gap: 1.1rem; color: var(--salmon); border-bottom-color: var(--salmon); }
-    .page-marker {
-      position: absolute;
-      bottom: 2.5rem;
-      right: 2.5rem;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.75rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-    }
+  .hero-logo {
+    width: min(440px, 88vw);
+    height: auto;
+    aspect-ratio: 828 / 315;
+    object-fit: contain;
+    margin: 0 auto 2rem;
+    display: block;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-catch {
+    font-family: 'Shippori Mincho', serif;
+    font-size: clamp(1.15rem, 3vw, 1.6rem);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.9;
+    color: var(--ink);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1rem;
+  }
+  .hero-sub {
+    font-size: 1rem;
+    opacity: 0.8;
+    position: relative;
+    z-index: 1;
+    font-weight: 400;
+  }
+  .hero-notes {
+    position: relative;
+    z-index: 1;
+    margin-top: 1.5rem;
+    font-size: 1.6rem;
+    letter-spacing: 0.6rem;
+  }
+  .hero-notes span:nth-child(1) { color: var(--salmon); }
+  .hero-notes span:nth-child(2) { color: var(--sage); }
+  .hero-notes span:nth-child(3) { color: var(--teal); }
 
-    /* ─── SECTION COMMON ─── */
-    section { padding: 6rem 0; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 0 3rem; }
-    .section-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--salmon);
-      margin-bottom: 0.8rem;
-    }
-    .section-title {
-      font-size: 1.6rem;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      line-height: 1.6;
-      margin-bottom: 2.5rem;
-      color: var(--ink);
-    }
-    .divider {
-      width: 2.5rem;
-      height: 1px;
-      background: var(--teal);
-      margin: 1.5rem 0 2.5rem;
-    }
+  /* ─── SECTION COMMON ─── */
+  section { padding: 4.5rem 0; }
 
-    /* ─── ABOUT ─── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 5rem;
-      align-items: start;
-    }
-    .about-text p {
-      font-size: 0.95rem;
-      line-height: 2.1;
-      opacity: 0.85;
-      margin-bottom: 1.4rem;
-    }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-badge {
-      background: white;
-      border: 1px solid var(--rule);
-      border-radius: 2px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.4rem;
-    }
-    .badge-item {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-    }
-    .badge-icon {
-      font-size: 1.2rem;
-      line-height: 1;
-      margin-top: 0.1rem;
-      flex-shrink: 0;
-    }
-    .badge-text {
-      font-size: 0.85rem;
-      line-height: 1.7;
-      opacity: 0.8;
-    }
-    .badge-text strong {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--teal);
-      margin-bottom: 0.15rem;
-    }
+  /* セクション背景にロゴ4色を淡く敷く */
+  #about    { background: linear-gradient(180deg, rgba(240,166,137,0.10), rgba(240,166,137,0.04)); }
+  #tobira   { background: rgba(155,185,151,0.13); }
+  #senmonshi{ background: linear-gradient(180deg, rgba(228,189,86,0.12), rgba(228,189,86,0.05)); }
+  #works    { background: rgba(106,180,179,0.12); }
+  #contact  { background: rgba(228,170,132,0.13); }
 
-    /* ─── LIVE INFO ─── */
-    .live-section { background: white; }
-    .live-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .live-item {
-      display: grid;
-      grid-template-columns: 7rem 1fr auto;
-      gap: 2rem;
-      align-items: baseline;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid var(--rule);
-    }
-    .live-item:first-child { border-top: 1px solid var(--rule); }
-    .live-date {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-    .live-venue {
-      font-size: 0.92rem;
-      font-weight: 500;
-    }
-    .live-venue span {
-      display: block;
-      font-weight: 400;
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-    }
-    .live-tag {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      color: var(--teal);
-      border: 1px solid var(--sage);
-      padding: 0.2rem 0.7rem;
-      border-radius: 1px;
-      white-space: nowrap;
-    }
+  .section-head { text-align: center; margin-bottom: 3rem; }
+  .section-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 0.8rem;
+    display: block;
+  }
+  .section-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  .section-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+  .section-title::before, .section-title::after {
+    content: '';
+    display: inline-block;
+    width: 0.6rem; height: 0.6rem;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 0 0.6rem;
+  }
+  #about    .section-title::before, #about    .section-title::after { background: var(--salmon); }
+  #tobira   .section-title::before, #tobira   .section-title::after { background: var(--sage); }
+  #senmonshi .section-title::before, #senmonshi .section-title::after { background: var(--mustard); }
+  #works    .section-title::before, #works    .section-title::after { background: var(--teal); }
+  #contact  .section-title::before, #contact  .section-title::after { background: var(--terra); }
+  /* セクションごとのアクセント色 */
+  #about    .section-label { color: var(--salmon); }
+  #tobira   .section-label { color: var(--sage); }
+  #senmonshi .section-label { color: var(--mustard); }
+  #works    .section-label { color: var(--teal); }
+  #contact  .section-label { color: var(--terra); }
 
-    /* ─── MEDIA ─── */
-    .media-section { background: var(--paper); }
-    .media-card {
-      border: 1px solid var(--rule);
-      background: white;
-      padding: 2.2rem;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 2rem;
-      align-items: start;
-      max-width: 680px;
-    }
-    .media-label-tag {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      background: var(--ink);
-      color: var(--paper);
-      padding: 0.3rem 0.8rem;
-      white-space: nowrap;
-    }
-    .media-body {}
-    .media-source {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.82rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
-    }
-    .media-headline {
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.6;
-      margin-bottom: 0.6rem;
-    }
-    .media-desc {
-      font-size: 0.85rem;
-      line-height: 1.8;
-      opacity: 0.75;
-    }
+  /* マカロン型の小さな飾り */
+  .macaron-dot {
+    display: inline-block;
+    width: 0.7rem; height: 0.7rem;
+    border-radius: 50%;
+    margin: 0 0.15rem;
+    vertical-align: middle;
+  }
 
-    /* ─── CONTACT ─── */
-    .contact-section { background: var(--teal); color: var(--paper); }
-    .contact-section .section-label { color: var(--sage); }
-    .contact-section .section-title { color: var(--paper); }
-    .contact-section .divider { background: var(--sage); }
-    .contact-note {
-      font-size: 0.9rem;
-      line-height: 2;
-      opacity: 0.85;
-      max-width: 40ch;
-      margin-bottom: 2.5rem;
-    }
-    .contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      max-width: 480px;
-    }
-    .form-row { display: flex; flex-direction: column; gap: 0.4rem; }
-    .form-row label {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      opacity: 0.8;
-    }
-    .form-row input,
-    .form-row textarea {
-      background: rgba(247,243,236,0.12);
-      border: 1px solid rgba(247,243,236,0.3);
-      color: var(--paper);
-      padding: 0.75rem 1rem;
-      font-family: 'Shippori Mincho', serif;
-      font-size: 0.9rem;
-      outline: none;
-      border-radius: 1px;
-      transition: border-color 0.2s;
-    }
-    .form-row input::placeholder,
-    .form-row textarea::placeholder { opacity: 0.4; }
-    .form-row input:focus,
-    .form-row textarea:focus { border-color: rgba(247,243,236,0.7); }
-    .form-row textarea { resize: vertical; min-height: 120px; }
-    .btn-submit {
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.82rem;
-      letter-spacing: 0.18em;
-      background: transparent;
-      color: var(--paper);
-      border: 1px solid rgba(247,243,236,0.6);
-      padding: 0.9rem 2.5rem;
-      cursor: pointer;
-      width: fit-content;
-      transition: background 0.2s, color 0.2s;
-    }
-    .btn-submit:hover { background: var(--paper); color: var(--teal); }
+  /* ─── ABOUT / 理念 ─── */
+  .about-philosophy {
+    background: white;
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 6px 30px rgba(228,170,132,0.12);
+    max-width: 620px;
+    margin: 0 auto 2.5rem;
+  }
+  .about-philosophy .phil-lead {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--terra);
+    letter-spacing: 0.06em;
+    margin-bottom: 1.5rem;
+  }
+  .about-philosophy p {
+    font-size: 1rem;
+    line-height: 2.1;
+  }
+  .about-philosophy .phil-strong {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.05rem;
+    color: var(--sage);
+    font-weight: 600;
+  }
+  .about-desc {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.02rem;
+    line-height: 2.1;
+    opacity: 0.88;
+    font-weight: 400;
+  }
 
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--ink);
-      color: rgba(247,243,236,0.6);
-      padding: 2.5rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: 'Zen Kaku Gothic New', sans-serif;
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-    }
-    footer .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-style: italic;
-      color: rgba(247,243,236,0.85);
-    }
+  /* ─── 絵本のとびら ─── */
+  .tobira-hero {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  .tobira-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--sage);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+  .tobira-tagline {
+    font-size: 1.02rem;
+    letter-spacing: 0.15em;
+    opacity: 0.75;
+  }
+  .tobira-body {
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    font-size: 1.02rem;
+    line-height: 2.1;
+    font-weight: 400;
+  }
+  .tobira-verbs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 1.8rem 0;
+  }
+  .verb-chip {
+    background: var(--cream);
+    border: 1.5px solid var(--sage);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 0.4rem 1.3rem;
+    font-size: 0.98rem;
+    font-weight: 500;
+  }
+  .target-box {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .target-box h3 {
+    text-align: center;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--sage);
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.05em;
+  }
+  .target-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+    list-style: none;
+  }
+  .target-list li {
+    background: white;
+    border-radius: 999px;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.95rem;
+    font-weight: 400;
+    box-shadow: 0 2px 8px rgba(90,74,62,0.06);
+  }
+  .target-note {
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.7;
+    margin-top: 1.3rem;
+    font-weight: 400;
+  }
 
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; }
-      .hero-left { min-height: 45vh; }
-      .hero-right { padding: 3rem 1.5rem; }
-      .hero-right::before { display: none; }
-      .container { padding: 0 1.5rem; }
-      section { padding: 4rem 0; }
-      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      .live-item { grid-template-columns: 5.5rem 1fr; gap: 1rem; }
-      .live-tag { display: none; }
-      .media-card { grid-template-columns: 1fr; gap: 1rem; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
-    }
+  /* ─── 絵本専門士 ─── */
+  .senmonshi-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2.8rem 2.2rem;
+    max-width: 640px;
+    margin: 0 auto;
+    box-shadow: 0 6px 30px rgba(228,189,86,0.13);
+    position: relative;
+  }
+  .senmonshi-badge {
+    position: absolute;
+    top: -1.1rem; left: 50%;
+    transform: translateX(-50%);
+    background: var(--mustard);
+    color: white;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.4rem 1.5rem;
+    border-radius: 999px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .senmonshi-card p {
+    font-size: 1.02rem;
+    line-height: 2.1;
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+  }
+  .senmonshi-card p:last-child { margin-bottom: 0; }
+  .senmonshi-card .emphasis {
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 500;
+    color: var(--mustard);
+    font-size: 1rem;
+  }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { transition: none !important; }
-    }
-  </style>
+  /* ─── 活動実績 ─── */
+  .works-note {
+    text-align: center;
+    max-width: 540px;
+    margin: 0 auto 2.5rem;
+    font-size: 1.02rem;
+    opacity: 0.85;
+    font-weight: 400;
+  }
+  .works-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .work-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 14px rgba(90,74,62,0.07);
+    border-top: 4px solid var(--teal);
+  }
+  .work-card .work-place {
+    font-weight: 700;
+    font-size: 0.98rem;
+    margin-bottom: 0.3rem;
+  }
+  .work-card .work-detail {
+    font-size: 0.95rem;
+    opacity: 0.78;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+  .media-strip {
+    background: var(--terra);
+    color: white;
+    border-radius: 16px;
+    padding: 1.6rem 2rem;
+    max-width: 700px;
+    margin: 1.8rem auto 0;
+    text-align: center;
+  }
+  .media-strip .ms-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    opacity: 0.9;
+    margin-bottom: 0.4rem;
+  }
+  .media-strip .ms-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.7;
+  }
+
+  /* ─── お問い合わせ ─── */
+  .contact-lead {
+    text-align: center;
+    font-size: 1.02rem;
+    line-height: 2.1;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    font-weight: 400;
+  }
+  .contact-methods {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .contact-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(90,74,62,0.15); }
+  .btn-mail { background: var(--terra); color: white; }
+  .btn-insta { background: white; color: var(--ink); border: 1.5px solid var(--salmon); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 2.5rem 1.5rem 3rem;
+    background: var(--cream);
+  }
+  .footer-logo {
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    color: var(--terra);
+    margin-bottom: 0.5rem;
+  }
+  .footer-copy {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    font-weight: 400;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 720px) {
+    nav { flex-direction: column; gap: 0.6rem; padding: 0.7rem 1rem; }
+    .nav-links { gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+    .nav-links a { font-size: 0.78rem; padding: 0.3rem 0.75rem; }
+    .hero { padding: 9rem 1.5rem 3.5rem; }
+    .works-grid { grid-template-columns: 1fr; }
+    section { padding: 3.5rem 0; }
+  }
+  @media (max-width: 420px) {
+    .nav-logo { font-size: 1.2rem; }
+    .nav-links { gap: 0.35rem; }
+    .nav-links a { font-size: 0.72rem; padding: 0.28rem 0.65rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+  }
+
+  /* ふわっと浮き上がるスクロール演出 */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 専用アニメを持つ要素は共通の浮き上がりを無効化 */
+  .phil-lead.reveal, .tobira-verbs.reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 理念の文字が一文字ずつ現れる */
+  .phil-lead .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .phil-lead.is-visible .ch {
+    animation: charFloat 0.6s ease forwards;
+  }
+  @keyframes charFloat {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 動詞チップがぽんぽんと現れる */
+  .tobira-verbs.is-visible .verb-chip {
+    animation: chipPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+  }
+  .tobira-verbs .verb-chip { opacity: 0; }
+  .tobira-verbs.is-visible .verb-chip:nth-child(1) { animation-delay: 0.05s; }
+  .tobira-verbs.is-visible .verb-chip:nth-child(2) { animation-delay: 0.20s; }
+  .tobira-verbs.is-visible .verb-chip:nth-child(3) { animation-delay: 0.35s; }
+  .tobira-verbs.is-visible .verb-chip:nth-child(4) { animation-delay: 0.50s; }
+  @keyframes chipPop {
+    0%   { opacity: 0; transform: scale(0.8) translateY(8px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+</style>
 </head>
 <body>
 
@@ -449,216 +534,283 @@
 <nav>
   <span class="nav-logo">macaron</span>
   <ul class="nav-links">
-    <li><a href="#about">について</a></li>
-    <li><a href="#live">ライブ</a></li>
-    <li><a href="#media">メディア</a></li>
-    <li><a href="#contact">お問い合わせ</a></li>
+    <li><a href="#about" class="nav-about">マカロンについて</a></li>
+    <li><a href="#tobira" class="nav-tobira">絵本のとびら</a></li>
+    <li><a href="#senmonshi" class="nav-senmonshi">絵本専門士</a></li>
+    <li><a href="#works" class="nav-works">活動実績</a></li>
+    <li><a href="#contact" class="nav-contact">お問い合わせ</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-illustration">
-      <!-- 絵本的な音楽イラスト（SVG手描き風） -->
-      <svg viewBox="0 0 260 280" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- 音符たち -->
-        <circle cx="90" cy="180" r="14" fill="rgba(247,243,236,0.85)"/>
-        <rect x="104" y="138" width="3" height="44" fill="rgba(247,243,236,0.85)" rx="1.5"/>
-        <path d="M107 138 Q130 128 138 140" stroke="rgba(247,243,236,0.85)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<header class="hero">
+  <!-- 横ロゴ。本番は実画像。 -->
+  <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QC8RXhpZgAATU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAIdpAAQAAAABAAAAWgAAAAAAAABIAAAAAQAAAEgAAAABAAeQAAAHAAAABDAyMjGRAQAHAAAABAECAwCgAAAHAAAABDAxMDCgAQADAAAAAQABAACgAgAEAAAAAQAAAzygAwAEAAAAAQAAATukBgADAAAAAQAAAAAAAAAA/8AAEQgBOwM8AwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/bAEMAAgICAgICAwICAwQDAwMEBgQEBAQGBwYGBgYGBwgHBwcHBwcICAgICAgICAoKCgoKCgwMDAwMDQ0NDQ0NDQ0NDf/bAEMBAgICAwMDBgMDBg4JCAkODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODg4ODv/dAAQANP/aAAwDAQACEQMRAD8A/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9D9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/0f38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//S/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9P9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiio/uUASUUUUAFFFFABRRRQAUUUUAFUvt1p/FIKfM7xxloxvevy18T+EtS8Sa9qGua58I9X/tC9md7nyfEmysalT2ZrTpc592+LPip4f8P+Eb3xnYxTa9aWU3kzLpX79w8TV85eEv28fh547eeDwd4a8T6w9v/wA+9nXnnwPsPiIvg3xz4a+F/hfSfDGjSTZsJJ7z7Z/pP3LtZa/Oz9mPxr8UPhZ4A+JnxG+Hj6eE0OHS/t/9oJ/z0mrz6uMkdlPBxP24+Evxr1n4leKtZ0O68F6v4csNNhja2vtUj2efX0bIM18ofsg/FbxX8ZPg/beNfGnkf2hPdTw5t02Jge1fV+ecV3R/hnDU9yoLRX5NftO/tO/GL4Z/tK6R8OfBV5ax6VqMdmfJuIs8nk819A/tR/texfs5avoelPoUusf2vE8vHtR9Yga/V5n3RRXHeDvEA8V+FNG8RmPyv7V0+2v/AC/Tz08yuxroOciJA60Ag9K+Bf8AgoBa/ExPhFF4h+G2rXlgNMufN1SKx+/LaPR+zZ+0F4S039lPQPHnj7WPIg0aB9Nv7mX53eSKsfbe97M6fq/7vnPvuivMfhv8S/CvxX8K2fjHwZei8066/wC+0f8AutXp1UcxyereKvDPhsRpreqWmn7/ALv2iaKP+dfMH7SH7Umj/BvwAPFvhM6V4iuftyWptftgru/jX/wz68mmL8b/AOxvN+f+zzqtfnT4O+I37NVh8cNZ+GnjTw34SuPDbn7Ro3iO2i2J/wBcZ65sRV5P3Z2YfDn6H/B79oLwv4/+HHh/xl4i1PSdGv8AVLQ3E1j9sh/d16v4E+IHhD4iaZJqng3UYdUtLa4ezlmh/wCekVfjLpWpfAvxh+1JqHkjw5onw08PRJFL5qfu7+SKv1V/Z91b4L6/4Rvb74KRWsWiR6nPFMtqmxPtEZ5p4bE+0DE0IQOv+JHxe8AfCWwttR8e6pFpVveP5SGWvIfil+1f8JvAPgj/AISK18R2NzPqOn3N1pGPnS5eGvYfi14U8F+NvAer6H8QooZPD72zvdGb/ln5f8Vfhx+2PD8KE+H/AMH/APhThhl8P+RqkUX+/F9hoxmIqUysHhoVD78+Bv7engrxF4KGr/GTUtP8N6o83lR2MD19RfEj9oL4YfCm40C28Zaolo3iSVI7PP8Ack/5avX4d/tYX/iBtC+FFrrnhKHwx9m0P5WSSL/SU8qKv1l8N/Dn9nz4jeItK1jxPp9hq/jSz0fS5HivD/z0topYmjjrlo4mpU/dl4nDRh759pQzR3FukkD5SQfKau1WijSFBGg2IlWa9Y84jHHSvKPiR8U/D3w0m8NW+uPsfxJrMGi2v/XSWvMPiN+178F/hVrr+G/GmoXFvqKfwC2kNfkH+2t+1H4f+Nvi3w3/AMK5nuP7O8Nh7gSmPy3+0y1xYnGQpxOzDYOVSof0RZzRX5OaZ/wU98FR6LpqS+FdXvtVkhQTrDX6C/CDxz4m+IXhOPxN4j8OS+Fzc/NbWN3Jvl8v+89aU8TGp/DMKuGnT/iHsVFFeW/F3VfGmj/DjXdR+HNh/aXiSCzc6fbf35K6TI9Oor8lbb4y/wDBRVz+/wDAMH/gOlc38MP20P2ivFHxy0n4MeIdH0uK4fWfsGq7I/8AVRxf8fFcX12mdX1WZ+yVFFFdpykdFfh7+3P+1NezeL7PwX8MNb1TRtQ8M3N/Z635Ve7/AAq/4KE/BbQfh34e0TxrqGsT63Z6fBFfn7H1lrj+uw5vZnZ9Snye0P1Lorwj4J/H7wF8etFv9b8AvM9tp9x9lm+0R+XzXu9dBxhRXwT+2N+1T4i/ZxfwpF4d0e31j+3/ALYJftD4/wCPYA14Pon7bv7TuvWFvrGj/B8XFneKhhcedXPPFxpy5DohgZVI+0P1swDTq/LT4Hft3eNfih8Z9L+EXiTwZBoUs81zDc/vJPMie2Sv1LrajiYVPgMqtKpT+MKK8b+OUvxGh+GmsyfCcBvFHlD7Bu9a8f8A2Zfi58V/G0eo+D/jP4Ym8P8AiTRgj+b/AAXMZqvae97MPZe7zn2RRUbsEWmxOkqB06VoQTUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//U/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigDE1DUrXS9On1G9fyLe2R5JH9Ejr8+J5viR+0t4iv38O376J4e0/8Adw19EftQa7/Ynwi1RY/9ZqBSxroP2e9Bh8PfCjw/BH1ng+1t/wBtKxqfvJezOml+7jznzF8G/iT4x+Hfj1PhT8RJTLb3D+TC57PJX6JnnrX50/td20em+P8AwvrNr/x9/Zv/AEW9fomjfLmpoafuxVpfbJ6KKK6DnCiiigAooooAiAxX5f8AxD8GprHjzW75PhvDrfmX08n27+3fL8z/ALY1+n0nNfzjXPhi6039oH4kf8JjpWv3+jpP4gSw/s+KZ/3+5vIrzcZW9mduCpan6VfBrRPEHgP4E+KfLk0b4b3dtq0mqNeQy/2pbpbf35a+O/CfwX+HOh+DPGfhfw/8ePD6aH4kS2/trMX8FtWP+yzp3iaD4DftC6b4ktL+Lz/C/wBoi/tBXTPlQ31cn+zho/hCb9mP436xrFpYT6jbWv8AoP2j/rjLXFz+05Tu9l7PmP0T/Yj+G8HgXRtUHhD4l2/jjw3/AKqK2gT5La5r9B6/KH/glpN/xbzxja/88NdSv1e/gr2cL/DPOxXxn5n/ALX/AOz/AOI/E3xT+Hfxn8K2f2x9A1C2h1SFe9vHPn+tfKn/AAU21ptX+MfhPwzZf6+z0g/993MvFftV4y8Vaf4J0C78S6vv+yWSb5RCN7mvyx+C3wC+IXxv/aBn/aR+Luky6NpMd/8AbdH0u56/uv8Aj3NcOJw3/LuJvhqn/LyZ+qfgzQR4Y8JaH4fP/ML0+2s/+/Ufl12FFFeoecZN5BDNZyR3KB1dOVP3K/mr8QaP/wANC/HvUPhz8HNP/svw/e6o/wBltV/49wkX7qW7r+lW8hS+s5LM9J0eOvwf+CXhjxv+x5+0KZ/Hnh6/1PQLmCXSYtW0+Df/ANt68vMqPtOU9bAfbsfrn+z98CPCvwA8HR+FfDjPNJIfMurp/wDlo9e/Vg6BrGn+ItJt9X0yTzbe5G+JsYrer0IHk1Tw342xaXpvw28S+LW0qw1S+8P6LqF/bfb4EnG+KHza/Nf9nT4x/Fj46x64PD/w48Bah/ZP2b/j4j+z1+oPxvgS8+DPjmD+/wCHNQX/AMlpa/FH9hjRrLU7LxZNdfEW+8BbLrT8Czu4U8+uXE83NE9TD/wpHr/xr+OvxG+EHj/Q/B3ib4c+CtL+2wxzeXYwJcfJI/lV+w2h+HtG8N2ptdFsobCNzvYQDYlfzy/tm20Gj/Fvw+lr40vvG4TR4G+33kkUvlfv5a/o4GGiow3xyKxnwwPkT9rLwhD4t8EJZ+JPGUfgzwc8yDV7kRs884/hi/SvhD4pfD39j/xD4G8L+DvC/wASLDw9b+G5bl4mKSu9293X7EeJZtEsdFuLnxD5I06JczfaE3pX49fE7wL8Qf2zPiTZaV4N0L/hFfhv4fb91qNzZ+V9rqcZSIwcz5ts9R+Hn7Qep6XoHjr4ga7olv4b0r/QJ9djidP4IvIT7LX1d8W9N+BHxL1/4YQeAvHjW3jC0l0vwqNR0iKX95b182fsQfDyfxp45+IPhmxuPsepp4cf7Nff88rmO7WvtD4SfGX416V8W9L+DfxR+GenXF/53/IesbdYP3cX/LxXFhv3lP8AeHbifi/dn6d6fZDTbC3sy5l8iFItx+Zz5dbdFFe6fPnzV+0H8Hfhj8VvBd2nxDtkS3022eZdR/5a230r+YCXZvbyM+VX9Jv7YVx4qn+D1x4B8B2n2rXfGdymkWyp/ck/eTy1xX7Ov7EXgL4WeGLj/hNrS21/xDq8Pk39zMmc14uNw3t6n7s9fBY76vT/AHh8Gf8ABNfwJ8O/FHjjW9S8TWcVx4g0cJNpay9h61+9R6V+Wmm/sr6n+zr8ffD/AMVPhKTceFbyX7Bq2lN/rLaC471+pY6V24Kn7On7M5sZV9pL2hLRRRXacJ8OfHH9sb4c/DKHWvDGn3BPjG1TZbWNxHIiPPJXEfsZfs1WPgQXfxc8SatB4j8Wa6P3l3bHfHHX0d8c/wBnnwD8fPDj6P4qtAlzGv8Aod+n+tgevFf2QP2WPEf7PqazdeIvELam+oO4hsI/+PaKOuJU5c37w7een7H92fe1FFFdpxH4K/8ABRrQdD/4XX4T8P8AhnTFTVNTtvtFw8X/AC1e4ua+zf2rfhD4A8B/sm+Jf7N0Kwgu9O0q2h84R/8ATSKGub0f4OeIPjV+2Lqnxk8VWRt/C/g6VNP0fzf+Xue274r6B/bX0fWfEH7NXizw/wCH7J9R1HUH0+CGBP8AppqNtXl+z+KZ6ftPfhA8B/4Jd6V9j+C2uapJ/wAxDX5P/IcEVfpyBivn79mb4XP8Gvgt4b8B3X/H/aQ777/rvL88tfQVdeGp+zh7M4cTV9pP2h+OH/BVJE+yeApj/wAs59T/APQRX6Q/s7pt+Avw5Hp4U0j/ANJIq+Mv+Cjvw18b/EXwt4QXwJo8+t3FlqUsstvbemK+RfDPjT/goB4V0TT/AA5omh6umn6bbR2VsPsdcPtfZ1pHp+z9rRjTRZ+D1vj/AIKWXrf3PEviD/0VdV+9lfhz+yz8K/jsP2r9O+LfxR8L39ik51Ca6v7mPy08yW0aKv3GrowHwnPmXxBXmnjf4n+Bfhxpz6x401e20q3jXrM/z1jfHS38Wz/CPxZB4Anmt/EA0yc6fJB9/wA2vyF8G/sEftAfFXUotc+NOsSaVb/9PEnm3lXiakqf8M58PThL+IeofET9qnxn+1D4vt/gZ8AoJ7DTNQbZqOvf9O9frxYWFtY2Nvp8H+rgRIo/+2deMfBj9n/4dfAXQf7L8C6ftL/6+5PzzS172Ony1dCnU+OoGJnD/l2TUUUV0nOFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//V/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD4N/bW1HGmeGNGH/Le5nm/wC/UVfX/g2wGj+ENGs/+fbT7eD/AL9pXxZ+2VBHe694Mt8j9/8AaYq9k+Onxq0r4feHXstFu1fWrxfLtkT5/LrklP2cpzO/k9pGNM+cviZf/wDC1f2k9L8M2b77TS7iKz/79/vZ6/SUAKK/Ov8AZlh8E+FUu/H3jPWbVNVvP3UAlk+fy6+tX+O/wij/ANd4p0//AL7owxjifi9nTPZMCjArwtv2jfhCm/8A4qCB6qJ+0z8Hf+gyP++K356Zj7Koe/4FGBXz9/w0r8H92P7YX/v3W5B+0D8I5xx4ksU/3no56YeyqHs1FeQp8dPhK/TxPp/51uWnxT+Ht9/x56/Yyf8AbSjnpkezmejVB5Sf3FrDj8R6BOu6DVLV/wDtrFWkmo2Lj93Oj/jWgGD4g8PaP4n0HUvDmqxedZarbyWNyn9+OT93JXzLZ/sMfs42Gnz6dH4cLwXX+t3yvX2DUmcc1n7OEwp1ah4h8IfgP8OfgfbXlr8PLA2ceoMhm3Pvr2+iigBGRO9S0UVoAUUUUAFRMisPmG+paKAI6koooA5/VdHsdb0250jUB5tveRPDKP8AYevnzw1+yB+zz4TiZNN8IWL+Z/z8DNfTwz3paz5ITD2kz5P8SfsZfs6+JbxNSu/CdtFPGMf6LxX1TGgCLU9B9qPZU6Y+eoUZrSC7iMFzGJY/RxVpIY4V2RrViitBHzt8Lf2bvhZ8H/EWp+J/A2ntbX+rjE5Mm+voHyUyH2DfSA5qWs6dIPae0JKKKK0ArGFHZXKjclWaKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiisqbUrC0/4+LiKP/ekoA1aK4258b+D7If6VrdjH/wBtoq3NP1Ky1W0j1CwlFxbuNyOtAGtRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB/9b9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKAPlnxJ+1H4M0bUZNI0uwv8AXbu3O2UWkdcuPjn8YPEf/InfD6XyvW+evqCw8MaBpU8lzY6fbQyyl5HkEddTgVzeyqG3toHyDG37V+s5dho+joP71St8NP2jr/5rrx/FZ/8AXGOvrjdRuo9kR7c+Sf8AhQfxMuv+Qx8SdQnT/YSph+zCrhRfeNNdlP8Av19ZV8+/Gv426V8LNMaGNhca5cj/AEO1onSpwNYVJ1D4A+PnhzQfBvjG38M6JqF1efZYfNuTdSb9jy11nwC+B0fxUafxH4nM39j2v7qL+/O9eMeJNE8cNbf8J54js5vK1ef/AI+bj+N6/Vz4I6NDoPwu8NWMH3HsI5z/AL8n72uLDU+eR24mp7OBzdl+zJ8IrL/mEGf/AK+JN9dHbfAf4R2y/uPDGn/98V7BkUZFelyUzzfa1DysfBr4WLynhrT3/Cpf+FO/C/8Ai8L6b/37r1Cijkpk89Q8j/4Uh8LH+/4a0/8A74qk37P/AMIm6+GrFP8AgFe0ZFGRRyUyva1D5+l/Zm+D82f+JGn4GsOX9k74Ry/8ud0h/wCutfT1FHJTK+tSPk5v2Q/ASf8AHjqGqW3+7NWNcfslWu4vZeLdWir7KqrLMkK7nZKz9nAPrUj47j/Zu8f6X/yBvH9/H/v1Z/4V1+0hpfNr44iv9n/PZK+g7/4j+FNPX57yFj6CuLu/jXoKN/otvNP9K4amNwtP7R6dLL8XiP4UDyl5/wBr/Rx8sejanSQ/Fz9ofSP+Q/4B+0f7VtXcP8cbg/6jTg/40L8dJP8Alvp1cf8Aa+D/AJz1v9Wsx/59nBTftTeI7D/kK+BtRiq9p37YHgZ/k1zTNQ0t/wDpqm+vQrb41aJcHy76zmStq21r4ZeJv3M9pZb/AO7cR110cwjU/hzOLFZViKOtWkZ2lftIfCLVfkGuxWzf9PP7uvQ7Dx54L1Ff9B1ixk/7apXF6j8B/hJrq7rnw/Y/70Veb3n7IfwyuMyWMl9Yf7r13/vDxv3Z9SpcQXP+ocP/ALr1Zr4luP2TdYsf+Ra8aahB/wBdqp/8Kr/ab0BcaJ4vW8j/ALsppe1qG3sKfc+7qK+HU8VftZaEvlXWj2OsD1UVYT9prxxoOI/G3ga9tv8Ar3p/WIGPsGfauBRgV8waV+1h8K9S/wBfPc2L/wASyx16jp3xd+HetKP7K8Q2Ev8AwOtOemZ+xmep0VkQXum6gv8AotxDcf8AXJ1etetDMKKKKACiiigAooooAKKKKACiiigAooooAr4xxTt1Y8+sadaD/SrmGOsWXxt4bT71/b/99159XM8NT+OZccPOf8M7M9KMCuHHjfwe/wDzE7f/AL+Vbg8W+HJeY7+F/wDgdZQzjCVP4dQ0+r1/5TrqKpw3ME3+rkD1crs+smBJRRRXSAUUUUAFFFFABRRRQAUUVn3F/ZW3+vnjT/eNAFyiuGu/iJ4E09f9L8QWEX/bVK4q6/aG+EVj/rfEdtJ/1zrPnpi9lUPbqK+Wbz9rP4U2efs731yf+mUFcnd/tfWc37vQfC2qXb1n9YgbewmfaVFfFtn8XP2gPF//ACLPgtdMj/v3VaH/AAg/7Svin/kYPFlrokfpp9L2och9WXmpadpqb9QuYrdP9t9leSeIP2gfhT4c/wCPzWIrh/7tsN9eXRfso6de/v8Axh4m1bW5f+mj16Xov7Pnwm0eJY4vD9vce86b6f7w0jTpnkl5+1bPrU/9nfDXwxfaxcerVIF/av8AFLZL6d4fjr6u0zQNE0WHytHt4bNP+mSVvjCil7KoL2lP/l2fHyfAH4qayv8AxV/xEvn9rZK2rX9lHwj/AMxnWdZ1X/rtcV9UUVX1aBHt5nzZbfsrfCG1/wCXC5f6z17joPh7TfDGj22haNF5NpZReVCtdFRV8lMy9pMkooorQAooooAKKKKACiiigAooooAKKKKACiiigD//1/38ooooAKKKKACiiigAooooAKKKKACiiigAooooAjoxnivJfEvxl+HXhBzb65rEEc6f8uyfPJXlF5+1v4Fzs0DTNU1h/wDp2jrL2lOmX7KofWNFfIKfHv4n61Hv8NfDfUHj/wCnmsvXfin+0Vpek3muXPhfT9LtLKLzT50lR9YgV7CZ6v8AG34vab8LNB4/f6td/wDHrb1458GPgnd+JLz/AIWf8Vc6hqd788Ntc/8ALOvnfw5oHxS+PXiufxxB9naSxZAPtHyRV9bJ4K/aVuR++8X6fZ/9cYK5oz9pL2hu4+zp+zM39sTT45PhhZv2tNUgNev/AAL1gaz8JvCl4f4dPjhP/bL91/Svz4+OGt+L9NuF8EeIfFv/AAkgT57+EfcR6y/hZ4d+MHjewOneCdSmg0uz/wCm+xBS9v8AvjX6t7p+ujzQx/eISqTa5pcXD3cI/wCB1+RHjTwv8UvAt5nxl/aH2b/ntDcM8b17D8KvC3wa+IwTTp9R1e01j/n2uLjrWn1gj6ufoY/ifw8n39Usk/7bx1TXxl4SfhNbsi//AF1jrwb/AIZI+Fr/AHzqD/8Abeh/2R/hJtO2O+j/ANr7RW37w5f3Z7//AMJf4V/6DFh/4EJVmLxBoM3+r1Ozb/rnNGa+b2/ZA+FG3y1F+n/beoT+yH4HH+o1TU4v9ySl7WoV7GB9PLq2ln/l7hP4iqt7rmm2ED3l1OEgTvXxp4m/Zm8M+G7SXVp/FerwxR1wWiab/Y9n9l+2TXH9/wA2TfXj5hnX1U+gyThn67sfSniL4zlle18Oxf8AbSTpXjOp6/q2qtuvL15axaK+DxubYjGfxD9UyzIsLg/giFFFFcB7wUUQo71pDRtTnHy2c0n/AGzo9kYfXY0zNooooNzsvDvjfXvD8qSQSefH/dlr6k8H+M9P8WW+6A+XPH1ir4prX0LV7nQtSi1CzPKV72U5/LCS9lVPkOI+F6GKp+0pfEfftFY+iapBrWnW+qWn+quV31sV+lH4sSVWeGOZNsiq9WaK0A4LVPh74H1hcapodndf78deY6r+zL8I9UJxpH2f/r2fZXuV/rGn6TF52oTpbp/t15lqfxs8DWJ4vPP/AOuVc1T2X/LwPrPszyN/2UtKsDu8M+KNW0r0CSVXfwH+0p4U3yeHPFNrrqdRDqCV2sn7RGgJny9PvXo/4aK8P/8AQMvvzrn58OZ/2hA4MfF/4+eHkz4m8Dfaf9qyqxD+1bBDhfEHhDV7B69HtPj54LmX/SYLi3f/AHa6+z+IPgDXUURX9s5ftLW3PH+Y6frOHqHnWlftVfCjUvv3lxb/APXWOvStL+K/w71mMf2Pr1hP/wADqS/8BfDnxTBvu9H0+/T1Ea15jqX7Kvwkv/uWE1qf+mUlX+8F+7PoO1vrS9TzLWUS/wC69aGRXyA/7KtrbfvPDnivVtNpv/CoPj5pOBo/xFeeIdpkpe1qFexgfYVFfH39g/tXWfz2utaNef79J/wnP7TuibhqXg611j/ryej2ouQ+wSuazbu+t7CAy3UgjSvka2/aM8cQ36abrnga+tqo+K/F174su910/kW/a3r4vi3jGjlUf7x6GCympXqHrmufF5ISYNEi833NeR6n4x8Sas/727x/s21czUdfz/mXGOYY9WlI/QMNkeHo/wAMkd5H++8s9R0UV837Woe2FFFFZ+1A0LbUtStuLW8li/7aV22jfE7xJp4/0h/tA/2685qSvUwOf47Cy5qMjjqYKhU/ixPqXw58TNI1si2m/wBHuPSvUY5Y5E4r4Jrn9b8MXfizULdB4i1DS0+4XhkbZX6/wp4kTqT9jjD5LG8Lx/iUD9B59Z0qz/113DH9ZK5+8+IvgjTf+QhrtjD/AL86V8vR/sfWNx8+o+LdVnrpNO/ZB+Gdt/yEZL+//wC2myv2n2tQ+S9lTPTL/wCP/wAJNK/4+PEli/8AuVwt5+1j8L0/d6d9v1OT+5FFXX237OXwht/u+H7d69A0rwB4L0GLZo+j2dsn+xHT/eGP7s+dn/aQ8Yauuzwd4A1S5f8A6bVj3Gt/tW+Kzix0u18NxN/z1+/X2psWjYtL2VQd6Z8Uj4MftB6z/wAjD4/8j/ZhqxZ/sl/afn8T+LtUv6+0KKr6tAPbzPl2z/ZO+FVttE8V5cN7y11lh+zr8I9N/wBT4ftpP+ute7UVfJTD28zjbTwF4M01Ntjo1jAn/XIV0EGl6dbD9xbQp9I61qK0MgooooAKKK5nVPFXhzREL6vqNtbD/bkoA6Kivm3xH+1F8LdB+SzvTrdx/d08eZXC/wDDQXxT8R/L4L+H99s/v3lYfWYGvsJn2ZRXxyn/AA1lr4/5hOiR1e/4VF8ddRTGsfEiWP2to6n2och9cUV8iv8As06/f/8AIY8eavcV9F+EPD7eGPDtloEl5NqP2JPK+0XP33q4c4uQ7OiiitjMKKKKACiiigAooooAKKKKACiiigAooooA/9D9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKAPCdN+APwssNRu9Yn0WK4uLmZ5ibn569UsPDeh6UMadZQW//XOOt6is+SmHtJklfC37ZPjJ7DStL8D2x/5C586b/rnFX3TX5s/FWMeMf2q9L8PzfPbxS2cMv+5H/pNTiP4R0Yb4j7D+CngpPh/8O9L0Mjy7h1864/66yVo/FTxjF4A8A6v4l/5a20P7n/rpJ+7jr06vj39sq4aD4bafAPuT6vHv/wC+Jaqf7uBFL352Pln4OfCC9+MN5rPiDVZz9niD5b/nrcyV7l+xfqzmLxJ4cn+/BLBcV7d+zLpUOlfCDRmT/l833R/Gvn34Tp/whP7UXijwyo41P7TtH/k2tclOlyctQ9CpV9pzwPvjUtOtNUtXsdQiS4t5PvB6+APjp+zm/hZJfH3w18yBIPnuLFe3+1FX6IZFMmRJkaN66Z06dQ86jVqUz5h/Zz+MP/Cx9A/sjWH/AOJ3pfyTH/nun/PWvqKvzBMX/Ckf2kbdLL9xo93Mn/fq4r9PYzmooTNK9MloorL1K4FlYXFx/cR2rpOc+Ufin4n/ALb1w6ZAf9Es+P8AtpXlNDs80rzv/G1Ffj2Y4mWIr89Q/ojKcFHC0YUYhXsngX4dWHinS/tl1LMhy8eK8br0nwd8RP8AhEdPls47fzMzbq6slq0Kcv35zcS08TUo/wCyntcPwc8KRfei3/hXTW3w/wDCtn/q7C3/ACrwK7+L/iaX/j3jhg+tcpdfEDxVdDm/Ir6X+1svp/BA+B/1dzbEfxJH2HbaRosCYs7aFP8AgFXXigSEn7iV4j8HmvrqDUdUuZXn3yog80/8867P4j6wmj+Gbm4XrKhhH/A69/DY2FTDe2PlcTg5U8X9V5j5AuX33Ms/981Xoor8mP3mkFFFFB0GjZL8aJbpP+Fb6jb/AGaBObO5Nbp+IX7UuijGseEotSjT/n2FdJ8I03+LwP7ls9fXmAflr9NyBzqYU/FOKuShjD4oh/am8Tab8nibwNfQbP8AnjW7rH7RL6lpaSeHNPls5J1+9dV0Xx08drYWw8IWP+tnTfcf7EdfKtTicbVpy9nTPgMyxv8Ay7pmhqWsavrF082o3j3Mn/TWs+iiuA8EKKK+mvAPwl8OeI/CVtqF958Fxcb/APVyUqWGqV6hdKjOofMtFfQXjv4L6P4Z0K41y1v7j93s4evn2ipSqU/4hpUpVKZuaX4m1vQj5ukXsttXtfhj4+apCwg8RRRTp/ej+R6+eKKKWJnT/hhTq1KZ+jXh/wAW6H4ng83R7kP/AM9B/HXXV+Y+j6xqWg36ajp0ssLpX2T8NfilaeMR9gvAIr9F/wC+6+gw2NhU/dzPYw2N9oe50UUV6J6J8rfFvxHJf6t/YkB/0e3/ANb/AL9eQVseIJvt+talc/37h6x6/jjijM5Y7MJTmfruU4b6vQhTCt/Q7FNT1q20+6/1TzIDWBXSeFf+Rj0z/r4irzslp0qmJhCp/MdGM/hzPoL/AIU/4bxnM351Gvwg8MHvNXrcW7vXinjj4haj4b1n+zrWASIYkNf0lnGS5JgKPtcTSPzrCYrF1p+ypyL/APwp7w0fuyTVF/wpzQP+es9ee/8AC3vEH/PKCu4+HnjvV/EWpT2t75QiSHfxXz+X4nhzG1vqtKkeliaWZYePtKkxP+FN6MF3efcZr56v7b7Ne3Fp/wA83dK+7j8qbq+FtW/5DF5/11evnvE3I8Dl1Kl7GB1cNY2vWlLnM6iiivyI+0PqD4Ta+2qaS9lOd8tn+6r1/tXyt8H7nyfEkiN8/n233q+qA2K/qjgTMJYvLYe1PybOsL9XxVi1RWBN4h0G2H+k6jaJ9ZVrkdR+MHwz0f8A5CXiOwh/7aV94eQek0V8w6l+1P8ACmx/cW09xqkv922gribz9pjxjq58jwP4G1Cf/auK5/rEDX2Ez7RHPagsq18UP4u/at1iLfBoenaIn/TzWL/wjnx+1r/kN/EDT9H/AOvaVKPaP+Unlp0/4kj7uaRB99qw5vEmg22ftWo2kX+/KlfF4+Baaj/yG/ihPPJ/0xuK27H9lb4b3RzfeJb3Uj/10Wj94XCeG/mPoq/+Lvw30tD9u8R2EH41weoftQ/CLTRxqj3H/XGPNJp/7MPwisF40s3B9ZJK6yz+CHwp0z/UeGtP3/33Sj94L92jyBf2rdN1FvI8KeG9U1SSkPxF/aN8Tfu/DfgyHR4/+el89fUum6Jo2lRbNKtIbWP/AKZJsrYwKXsqgOcD42l+F37RXinjxL4zh0qLvDp9XLX9kfwk8QfxPq2qazcf89JXr6+oqvq0A9vM8i8K/Bb4a+D/APkD6TD5v9+f53r12iirMiSiiitACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//9H9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKAMHUdb0fTf+QheQ2/8AvybK8z1P45fCbRf9f4jsd/8AdiO+vNpf2YtD13Wr/WPFmt6hqn2mZ5Qpkr0LR/2fvhTog/ceH7eU+s/z1z/vDT92cXcftW/DKNjHpw1C/f8A6ZW9fHdx8Q/+MhP+Fg6dpF9L++yLAx/vP+Pbyq/UOz8M6DpyhNOsIINv9yOvgr48zf8ACA/tA+HPG8i/6BIsE03/AGyfynrKv7Q6MNyHq/8Awvf4sXI/4k/w1vpEry3406l8Y/iF4HlTxD4IXS7TTj9vz5/z/uq/QVP3ypIjfI9E0MFxE8M6b0f5HFaeyqGftVA/Nv4FfEb4u3egp4G8ARaVL/Y//P8AyfPsklrz7xxq/wARfDnxnj1zW5NPsfE7/Z/3g/1Q82Lyq9o8dfsyeLfDGvSeL/hJcfvM+YLbOx0r5B8Yf8Ji/ia4/wCE08/+23f5/tH365antKcTvpctSX7s9z8K/FT41fEDxdb+FdL8TtHJcn/XRJ+7jr6XX4L/ABvkQi6+JM2fpXo/wR+E1h8L/DVvBPGr6zPHm+n9693ranS/5+HFPE/8+z8lv2g/Amv+BNY0f+3/ABBLrs97C+wzfweXX0rpv7PHjdoItRt/iHqEW9Ulryn9pe4fxl8atD8D6efnRIrP/gcklfpBGqwoI06VFKjDnNq1SXLE+OW/Zv8AiSjeYnxEvt9J/wAKU+MWlL5svxFeW3T/AFwlSvtE89ay9QhjvrKWBv4w8dXUw1PlMKeJnzH5/wBFbevaFLoepSWEnRKxK/IalKdOfsqh/ROAqQqRhUgFFFFI6goRJHrtfCnheDxFc+Q17DB/sj7717poPwk0fSLuHUHneeS3r2MDk9bFfvIHzOdcTUcL+6qfEdH4Zsrfwf4cgjunRNkeZjXzl8QPFzeKNX/cf8edt0r2vx14M8SeIubTUFFv2ir531nw3ruhP/pkDxp6/wAFe9ntSvTj7GEPcPlOEaeGdb29WXvHO0UUV8SfqIUUUUAesfCbXbDR9Xnhu/3H2gIAa+thtZcjpX54/vE/f2qSzyp2hrrT+09q91p0mi6j4W1DSLy4V4Vuf4Eevv8AhnH/ALj2dQ/HeNcBTp1/bUjz7xXqb654hv8AV1/jmfyv+udc/RRUH4qFFFFAHvfgD4RWvjDwuur3V3Lbyzl6+q/Dmjw6Folno8f/AC6Q7a+a/hZ8T0sI9L8GLpzuSfK80H/npLX1lXvYKlHl/dn0+G5OQ8l+Lmi61r/hP+ytDj82SedN3+5XyDf+BvFGlf8AH1pF7X27q3xA8LaJfnR9RvfIuPerFh458J6kRBZalA7v6U8ThY15k1KMakz88ntp0/19vLBUdfpbJpWmzr/pdtDL+FfJ3x203RdH1HS7TSLRbeScO58qvKxOW+zp855lXLfZw9oeB1c02/u9KvYtQ01/IuI33hqp0VynCe/2vxx+LzxvdweBv7R0/P8Ax8W0lXIf2nJ7b9x4j8Gatpz/AErX/Z31LzLXVNH/AOecqTCvpeW3imXawD17vvVKHtD6vB4mNSB8JTXMlzKZJz57v81R103i77P/AMJHefZP9R51crX8cZtR9hjpQP2rCVfaQhUCt7w1/wAjBpw/6eIqxa1NE+TXtM/67JRlH7vHQHiP4cj7or5P+Ln/ACNh/wCuKV9YV8k/FV93jCQf9Mo6/ozxQ/5FDPznhz/eUea16z8Hf+Rjl/69nryavWPhG3/FW/8Abs9fiPB3/I2pH22df7pM+o5P9TXwpqX/ACFLj/rs9fdcn+pr4Qu/+QjL9Xr9K8XvhpHgcH7zKdFFFfhp9qaFjpet6zN/Y/hu8+zXNyjgXv8Acq5D+zF49v2/4n/jm6f/AK476774PJZ/27J5rf6R5PFfVI5HNf0Z4X4OP9n8x+dcUYqft/ZHxqP2RPCzf8hDWdQua6mH4C/AzwHafatas4X/AOmuoSVrfFL41Wfg/fo+i4udU/8AHI/rXxXr/ijW/FF415rlyZyK/YcNlvtD8rzrjKlhPcp/EfSWqfFz4b+FR5PgXw/BI/8Az1ePZHXmmpfHrx/ep5cE8OnJ/wBO8eyvFKk+evoaeAw9M/OsZxXjq/2+Q3LzxPr+qF59V1Caf/rrJWHvqOitj5769iCSriXk9n/qJ5YKp0UGXOeh6F8UvG3h+UC11Rm/6Z3PzpX0V4U/aOtL9xa+KLT7N/00j6V8ZUVhUwtKoe7g+JMThfgkfrVZX9rf20d3auJ7d1yritXHGK/Or4T/ABXvvBd1/Z2ouZdJfqP+ef8Au17BcftRW1+PK8J+FtW1j6R183iaXsD9dyLNo5jT9rSPrUY7UHHevjNvGf7TnitPL8PeGLLw8j9JLyq7/A740eLED+NPHLp/07wCuH2p7vs/5z6T134m+BPDMZfXdYtLb/tpXiepftZfDyOXyNDs9Q1t/wDp2jo8MfspeAdHcXWvyXGuz/8ATzX0LYeEvDmjps0rTra3/wByOj95Mv8AcHzVH8fPidrif8Ut8O75/wDr4NSjxB+1Xqn/AB6aPpNh/wBfJr61oo9kHtoHyS/h79qm/T99ruk2b/8ATFK+jPB9nr1l4es7XxPcLd6pBFtnli/jrr/LHrSVrTpETqklFFFaEBRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//0v38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKxLzW9I01c6jqENt/12kRKANevm39oz4Yv8RPBBn0of8AE40jfc2OPvv/AM9I67+++M3wx0pf+Jh4k0+M/wC/XGXf7Tnwitv+Yx5v0Fc0+Q1pUqh53+zF8X4Nb0mLwB4jk8rWNO/dwbv+WsdfZVfk/wDGHW/h14n1ePxh8NJ9Qt9cz5sw+z13/g79rPxP4Yt0sfH2lyXf92b/AFb1nCv7P93UOueG9p+8pn6Q1+f37UqWn/C2/A/C/aHCbv8Ac8+tyX9tfQekPh6+/wC/kVfKfxN+LE3xA8daf40+xfZvsAgiW2/65S+bWWJxNOpTDDYadOR+yNeY/Eb4haN8NvDVxr2qHp/qYf45Hr4dl/bL8dSv5VvpFin41ytz8Pvjr8cJz4l1a38pP+WEVz+4StfrP/Pszhgv+fh6J+zN4T1bx148vPi74g+4k0jx/wC3LJX6K52818RaD4Z/ak0HRbfQ9D/sDT7O0XYqJWgNP/a6Rvnv9Gopr2dMKsOeofZuRRkV8XPH+2ArHZLo9Srqv7XUPElhpc//AABa09qY+xK3xH1X+0vFtyR/y7fuf+/dcDWtew/EeWeXVvHukQ6dKT96L7j1k1+W5tCVOtLnP3XhqcamFh7MKKKK84+hCvTfDHxQ1zRNqXJ+2weorzKitcNjZYeXtKZ5OKy2hjI+zrH294b8X6P4ltfO0+Xn+7/HWd488T6f4c0h5bkLK78CJv43r4+sb+6sLpLqzneKWr2ua9f+IZEur45MYxX2H+tH7j+8fF/6jezxPNze4Yrvvd56KKK+KP0YKKKtWtnLfzRwQDzC9BzSfVnqnwb0lrrxGdR/5ZWYf/vuSvoTxjeaLpehXGo6xEktvAuSKqeDPDEfhnS0tP43+aU15r+0FE83heznQ/JFdfPX6jgsNPB4Y/COKMy+t1p1qZ8dUUUV4x+bhRRRQB7f8C9L+1+Mf7R6RWcLmvtV22LXgfwC0NbDwzLq8g/e383/AI5HW98ZfEo8PeE3tYj/AKVqf+jQ19Fhv3FH2h9Lhv3eHPkHxbrY8R+I9Q1j+/N+6/3K0/hZY/bvHujQ/wDPOXzf+/X72uIr2/4E2ayeMXuW/wCWVs5rx8N+8xB4lL95XPtWvhb42363fjq4tF/5doYoa+3bmaO2jM0j/IlfmvrepPrGsXesyffu5nlr0c2q+77M9TMqvumXRRRXzh4J9Hfs73MUWs6pas/714UxX1deW/m2zwIdnFfAfw++I/hr4capJqPiK0vn8+HYhig319C6V+038JNT5XVDb/8AXzH5dfS4Ll9hyTPqsvpy9keHX9m9hfy2s3+tR3Vqp10Xi7WPC2t6/JqPhDUYdRS6TJ8r+B6wa/kTiDATwOLnRP2zA1vrFGFQjq3YTbL+3m/20qpRDXm4D93iSKp+gCcV4x4t+GreItZOsJd+UHiQV6RH4g0Vl+W7h/77qb+2tH/5+Yf+/lf11jqOAzDDeyxWx+U4adehU56R4NJ8Gbtf9Xf10nhH4cXvh3WxqlxeCeLa9ep/27pH/P3D/wB90w+INE6fbIf+/leFhOFMlwso1aZ31MyxNSPIaMyjySK+FJv9Y9fZE/i3QxA5+2Q5r4vr4vxYxkJey9nI97hOEqbn7QKKKK/Ej7Y67wXYz3/ivTo4/wDl3lQ/8Ajr1L42/En/AIQ/S/7M0p/+Jpej91/sJXhCS/GfSLtbj4e6J58V1D/x/Sx14r4k17W/E2ofbfEsu+62xxGv6v8ACfIJUsFzz+0fhPiXn/1fWkZEzyTM881R0UV+0n84hX1joX7PWkeIdCs9Xi1OeM3luk3T/npXydX1D4R/aBtfCvh7T9EudNnnktl8rfmssR9Y+wfR8O/UfaT+tHnnj34Q694Ii+1ttubP/nrHXkNfcMXx/wDAXiG3lstTt5rdJRsImG+vjLXrPTrbWb2PSpPtNukz/Zj/AH0qMLWqf8vSs/wmGp/vcLMy6KKktrZ7m6FtAnnTO2AldB80R0V7t8RvhyngvwVobNH/AMTB5n+2f9tK8JrOjW9odeJw1TCVeWp8QV+g3wC1sar4Dt7XaN+nnyK/Pmvob9nfWNUj8YHSIJP9EuVkuJhU5lT9phz6HhDMPYYr/Eff1FFFfKn7QR0VTvLy1sYvOupBEv8AfevK9a+OHwr0L91qXiCx830B31mB7BRXy1P+1j8OFbZpMWoao/8A0xirKH7R3iPU9ieHfh/rM/mfdZqj6zA19hM+u/MHpSV8gn4s/Hu8P+g/DZ0T1mevpDwhqWu6l4c0+78S2X9n6nOn+kwf3Hq4TJnSOyooorQgKKKKACiiigAooooAKKKKACiiigAooooA/9P9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKAPjnU/hR8cfGeqX8viHxn/Y+m+c/wBmt7D/AJ51cs/2TfB5AfxLq+ra2/cTT19bUVh9Wga+3meH6V+zx8JNGT9x4fhuP+vj567e2+HXgew/48dEsYP+2ddzRV8lMy9pMxIvD2gQ/wCr0u2j/wC2aVU1bwd4b12Mw6xplvcp/tiuqorQD5p1z9l34Tawm9NPNm3/AE7GviT4Z/CrQ/F3xm1XwXPJ5+j6JNcsf77pG/k1+rl3Mlpay3T/AHEVzXwP+xvD/anijxf4qf78ipD/AN/X82uKdOnznoUqk/ZyPrjQfg98N/DB87RdEtI5P77R769VoortPPCiiigAooooA5fX9Btdf019OvEzG1fGPijwvqfhS+e2uRvD/wCplr7rABWsXWNF07WbU29/GJUrw82ymGMpn0nD/EFXLp6fCfBlFe4eIPgxfRF7jQ5cp/zyNeW3XhrXdPb/AEjT5hXwGJymvh/jifr2A4iwuK/hzMGiiivOO4KKK07XSdXvV/0azmkop05VAqY2NP8AiGZRXpOlfCnxVqjfv4vsv/XWvTtG+DGl2AR9TlM8nvXs4fIMTW3gfO43izA0PgkfPmnaHq+rRH+yLKa42f3KzdG+IHj74eXcj6h8PZyf+evz76++tO06y02HyrOMRhOyVpHGMGvsMFkccL758FmvFlfG+79k+M7f9sTRoE/4qDwxqlgaXxh+0H8LvHfhW70WO8mtrp9mxZY6+tLzw/ouor/pVlbT/wC/HXDal8G/hhqan+0fDmnyf8Ar1qlOZ8n7kz4Nor1P4n/D1/Bup+dYj/iV3f8Aqj/c/wCmVeWV8xUpSpy9mfJVKXs6gVqaJpU+t6pb6NB9+7ZIqy69H+H/AIu0XwdJcanPZTXOobfKh/uJRS9nzmeG/iH2mX0jwfoKbn8jT7KHFfCvjvxZP4v16S+f/Vfctk9EqTxh4+1/xk2NRPlW/a2H3K4uu3G472n7umduJxPtAr6e/Z0teNX1H12RCvmH+CvsL4Pz2Hhj4b/2vqLiCJ5Zbqqy74icu+I3Pjb4g/sPwfJZ25/0jUP9Gir4hruPH3jCfxlrz6j9y3t/3UC1w9c+NxPtKpGNq+0kR0UVYtrZ7m5WCBPPd32LWBzn278KbvQfEHgqzhWBH+xr5E3mR/x10t/8MfAWrAjVNBsLj/tnVT4aeEf+EQ8NRWM//Hw5865/369LznivrKfw+8fUU+f2Z4F/wz78O9PlOo6HZGwuMf8ALE147r/hq80G7NteDd/zyb+/X26qjHFYeq6BpWswfZtQjWSOvgOLeCaObQ9pT+I+jynO6uF+I+G6kr2rxB8IbqE+foMu+NP+WMteSXmjavpR2ahaOlfz9mXDGYYKXs60T77D5th8R/DMyiiivG/2g7woooqva1wJKKK6LTPC+uaof9Es8f8ATatsNhsViKns6MeYipWp0/4pzteheCfAtz4lmF1L8mnIeT/z1r0Dwt8J0t8XWvP5/wD0zr222toraFIIE2IlfrXB/hxKdT6xjT5LOuKI/wAKgUr2KO10uSK2+TZC/l1+Trffr9drr/U1+SM3+tk+Tyq/prJz+eeOfsFeiiivdPzUKKKKAI/uVJQ9b3hrwvq/iu6+x6LbuSK5zWnhpVJ+zpmKkMl5KkEA82Svt74MfB0+HPL8S+Iov+Jn/BF/zyrf+GfwZ0zwVHHqN7svNW/57fwCvVvEniTTvCumSarqr7Io68bE4nn/AHdM/UMg4Yjhf9qxXxHyx+09qyFtI8Pwv86b7s18n10ni/xNL4r1y51q54Nwf+/cdc3XrYan7OkfB5/j/rWIlVCvVPhL458H/DrVrvxF4lnlxHDhPKTf88leV1dtf9YlXUp+0j7MyyXE/V8TCsfVtx+1HdagfI8GeD9U1NvU1l3Gq/tW+Lrbdptla6BG/Tf8klfYmnWqW1jAkcYifYmcCtavhvZVD+hec+ItO/Zr8ceJpftXxS8Z3dz/ANO1s1exaP8As6/CbRvnj0eG7dO90d9e90VX1aAe3mc9YeFfDmlf8g7Tra3/AN2OuloorcyCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1P38ooooAKKKKACiiigAooooAKKKKACiiigAooooAjor4+1TxN+0l4l1O707wjo1jotpBM8Xn3dVk+C/xy8Q8+KfH80CelnXN7U15D66mv7S1/188Sf75rBuvGvg+w5u9YsIP+28dfPdp+ytorD/AIn3iTWNU/66yVuR/su/B+zUySafM/8A11np/vB8iO9ufjZ8K7Ef6R4osP8Avusdv2ifhAn/ADMMD18/a9qv7JnhGVrV9LstQlT/AJ5J5lN0r43/ALOFs2P+Eb+wJ/151l7U0+rnZfET9pH4az+DtbsfD+pyvqcthPDbfu/45K8Q/Z7+Nfgv4ZeErux1mO6a/vb/AHbYoK0/j/8AET4f+KfCGnaB8O0tpLjUbnMv2eLY6RxV9h/D34faP4X8G6RoF5p1rLPZQIJn8tD+8p+9Kqbe5Tw54w/7V9pMP+JV4N1y4P0qyn7RXjSb/j1+HWqvX1altBD9yMD6JVvB9av2VQ5vaU/5T4/m+Ovxb+b7L8N756pJ8cvjev8Ar/hvN/33X2bg+tGD60eyqFe3j/KfGL/tA/FxH+f4bz7P9+l/4aX8cWwX+0Ph1qif7tfZuD60YPrR7KoHt4/ynxc/7WF9D/rPA2rVZh/a90Hj+0fDGrW3/AK+wGhR/viqD6RpEq/vLC2f6xqf6UeyqE+0p/ynzbD+1x8KD/rjeQH/AK5Vsw/tQfB65JR9QZP9+OvZ5vCfhe5/12j2kn/bJaw7j4UfDm7yLrw9YPv/AOmdP94L20Dirf4t/BPV8Ius6e//AF1NdBaT/CnVTvtH064f2cVjXP7PHwkvPv8Ahy2T/crk779lf4Qzf6izurY/9Mpaz9kdVPEpfDOR7lYWHhZkzax2uz/Y2V0yQxxj92K+Rrj9kzQ+W0fxJqtnn0NU4f2ffivoK7fDXxFuYE/6ain/AA/smc/3n2j7MyKMiviq58EftU2IP2TxZBef79VE8QftaeHv+PnSLPW/+uVV7Uzjhz7hor4rT9pD4k6J8ni74f30f/XvW3Z/tfeANwj1nT9U05/9qPfVfWYEewmfXGBRgV8+ab+038IdS6at9n/67DZXoumfE/wFrH/IK12xuf8ArnJV89MOSodDrug6d4j099O1KPzYJK+MPH3wm1zwoxutKSTUNO9f446+3be/s7xP9Fkjn/3Gq4y1zYnDQxBw1MNTqH5d0V9y+LPg94U8Rl7tF+xXX/PaGvANd+B/ijSH36akWoxe336+fq4GpTPGqYGdM8ZorYvNB1zSt/2qymg/7Z1j1BwhVxtRuntYrWSWXy4+i1TooAKKK6zQvAnijxE3+h6fJ9Zv3cdHs/aGhyddp8MvHHw38OeIHufFuoeVcWX/AB7L5dfRfgb4I6do7x6p4if7ff8Ap/yzr1C78AeC9RH+n6NYy/8AbKvTw2Al/EqHtYHDf8vKhyVr8ffhDccR+JLGN/8AbeuysfHng/VF/wCJbq9nP/23rmrv4I/Cm/TZP4a09/8AgFcPffssfCi8+aCzms3/AOmUler+8PW/dn0HDf2lz/qZUk+j1dyfSvjp/wBknTkffpni/WLdPTfVO5/Zi8WwhDo/j/UuP+etL2tQrkj/ADH2lVGb7K4/f4evip/2Y/iRMief4/mf8D/hTof2TNfT/X+OdQo/7dNo0Y/zH1deeDPC+o/66ygeubn+GHg7+MCP/gf/ANevB1/ZRn2r/wAVxrP6UyX9k2dxu/4TTV/0rx8TkGErfxKR2U8TKn/Dqnr83gb4a2f+vvIY/rcf/Xqk+lfB2xH77UbOP/tpXldj+x5oe/zdb8Q6hf12kX7KPwhVNjWE0v8A23rKnw1g/wDn0hfXJfzHQR/EL4HaL/qdV0iA0y6/aJ+D1kNi6zD/AMArlF/ZD+FIu/tH/Ew/3PtFdpYfs5/B3TcbNAhl/wCuvz16NPB+x/hQRwznF/xDm7n9rP4RW3/L5dS/SKuYuv2yPAcR8uw0vULt/avc4vgz8LY/9X4b0/8A7910dv4M8JWf/HrpVhF/2wSu796HPQPlST9ri6n/AOQP4L1W5r5w8Q6vd+JNVuNYutDfw/8Aazn7NX6rpbWUPypGEr4L/aHttXTxuZ7357WWFPstell3tOc+O415PqPwngtFFFfWn4WFXLCwnv7hLS0Tzbh28sCqdaGm382lX8eq2h8h7Z0kWg6IH0t4H/Z2u59l94sfyB/z7Rffr6v8PeHNF8K2Q07QbcW8XtTPDWvWviDQ7bW4H/dXUO/6V5N46+Onh/wxm10j/iYXf/kMV8rUniMRM/dMDSweAo856x4m8U6J4T046prMvlRV+fnxL+J17491DH+o05P9VFXOeLvGOv8AjHUPtmryeaP+WS/8s0rlK9PC4D2Z8BxHxNLFfu6XwBRRRXefFBXf/C3Rf7f8daXYtynneaf9yL97XAV9XfAu28O+D9MuPGniW8trB7v91Duk/grmxVT2cT3+F8FLFYmNM+0qK+cNc/ah+Fuifu4tQ/tGX/p2Fec3n7SvjjWhjwH4HvJ/e5r5D6xA/evYTPtWsW/1jSNMH+nXMNv/AL52V8ZxaR+0/wDEZs6zqEPhKz/6Z11Np+ydoDnz/FPiDVNYf/bel7WoNUof8vD2fUfjN8L9IRjqXiTT4v8AgdcJcftS/CK1+7qNxKf+mUFb+j/s8fCTRV/d+H4Lg/3rr569GtPBvhOw/wCPTRLOL/rnEtP94T+7Pno/tYeEn/48tG1i5H/XCvoTwj4mt/FXh+z1+CCa2jvU82OGf79bcGn2dsP3Vuif7qVoYAFaQ9oOcqZNRRRWhkFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/1f38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAI6+Sv2uvE2oaD8O7ey059h1e8+ymvrWvlz9qzwjN4n+GjXFim+40i4TUB+FY4j+Ea0PjPyuooor50+nPo/9lvwdB4p+JSXd8nn2+iD7f8A8D/5Y1+stfG37Ingx9E8F3fia6TyJdXm+T/rhHX2TXv4al7OmfOY2r7SZJRRRXScwUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAR1zd94T8Maiu3UdKsZx/twJXUUUAeKah8AfhTqn/Hx4csR9Erzu/8A2RPhdffNai6s/wDcevquis+Sma+3mfFc37Jc1n8/hjxhqFjUf/Ctv2lfC3/Iu+K4dYi/u3hr7YoqPq0A9vM+L0+Jv7S3hspH4g8GLqafxS2VW7b9q37H+78U+EtUsHr7EwKpXFnZ3YxNEk/+9U+yqD9tA+e9K/aY+D2s/ubnUPsn/X9Hiu3hPwm8VqHgGl39bGp/C7wBrQI1bQ7Gf/tnXkmr/srfDO8cz6N9p0SX1tHp/vCf9nPTn+FXgGX/AJhcP4U6P4V+AoummRH618/n4AfFXw583gn4gXqJ/wA8rmnjSP2s9F+a31DSdYT/AKa1Pufyh9Ton1Dpvg/w1pQ/4l2nQw/8ArpAip92vjef4r/tDeGd8niHwMmoxR/8tbKpLf8Aa10q2/c+KfDGqaU9V7SA/qx9k4FGBXzxo/7T/wAItUT/AJCps/8Ar5Ty69GsPil4C1QKNN16wn/7aVpz0w5Kh6NRWHFrujTD91qVq/8AuTRmtytDIKKKKACiiigAooooAKKKKACisl9UsYf9fcwp/wBtKzZvFnhqD/X6tYx/9vC0AdJRXnM3xX+G1sD5/iGwj/7aVzF1+0N8IbMfNr1s/wDums+emPkqHs+BJ96vGvjN4G/4TTwzLBZp/p9p+8grjLz9q/4Q2Y/d3l1P/wBc4M1y8v7X3g7/AFOm6Pql6/tRTxNOnIyxOWzrYfkqHyTNDJCzwTp5LJUddt438TyePda/tfR/Ber2E7f8fP7t/nrmb/SrnSj5GpWkttL/ANNa+tw2NjW/hn4ZnfDdbBS/umfRRRW54R0aeMfEsOhp4egvJINOtz0hrnN9FR0G9TEz/mJKKKKDAKK9E8MfCnxp4pZJNO08xxf89pv3aV9ZeBPgHoPhzy77W/8AiYagPX/VisKuPpUz6LLeGsTiv4ceWJ8//Dz4Iav4ytP7Q1eWXTrZ/uH/AJaPXtmmfsq/DCx2SalHPqcnrcyV9L+UFXFTAg18ziqv1h+8frWTZTHLYezpnnuk/Cv4faCv/Em0Gxtv+2dd8kKQrsjQIKs0VB7AUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAf/W/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKhdEdSjrxU1FAHxT48/ZH0HxBfy6p4Wvf7LeU/vYSn7uoPB/wCxx4f0q7F34s1KXVP+mA+RDX2zRWH1aBr7eZStrOCwt0tLVRFbxjCqK0aKK3MgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACsm80rTrwf6VbQz/8AXSPfWtRQB5jqPwq+H2rI/wDamgWE/wDwCuBv/wBmD4QX3+s0qSL/AK4ybK+h8ijIrPkpl+1qHyvL+yd8O8H+zrnV7P8A65XNZS/s1+I9I/5Fnx5qtp/v19fb6KX1aJf1qR8ZR/DT9pmzb9x45S5T/prTJ/D/AO1rZD/R9X0u4r7O3Ubqz9kR9ZPh9tO/a6l6XNglCeDv2spPv6/Zxf8AbSvuHAowKv6uae3PjL/hAv2q/wDoarGqdx4A/apdePFMP/AJK+2N1G6o9kZ/WT4Utvgv+0RqreZrnjf7MldA/wCy5rtyu/VPH+ryPX2jRVfVoGv1iZ8H/wDDIWuPc/v/ABndvb1vWn7HHg9AP7R1jULl6+zqKPq0CvrFQ+VU/ZD+FCf6xL+f/trXUWv7M3wjs/8AmECX/eNfQVFXyUzL28zzGz+DXwu05f8ARPDdgn/bOups/CXhjS0/0HSLSL/ciWupoo5DIrKnFYWs+FtD8QQ+RrNnDeJ/01FdCDmlrQzdOnM+adX/AGbvCV98+nyz6f8A9cq4C4/Zb1H/AJddZh/4HHX2n81Jg10/Xah4NThzBz+wfC//AAzH4k3/APITtdn+5V+L9mHV93+k6zCf92KvtvB9aMH1o+vYgx/1TwJ8zaV+zZ4TsP8AkJXFzff9da9W0j4Z+DdDIOnaVbxkd8V6HvNJn3rP6zOZ6eGybDYf+HAcibakoorI9UKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//1/38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//Q/fyiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9H9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/0v38ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA//Z" alt="語りと音楽★マカロン ロゴ" class="hero-logo">
+  <p class="hero-catch">絵本と歌の、やさしい時間。</p>
+  <p class="hero-sub">語りと音楽でつなぐ、誰もが安心して参加できる温かなひととき。</p>
+  <div class="hero-notes"><span>♪</span> <span>♩</span> <span>♫</span></div>
+</header>
 
-        <circle cx="150" cy="196" r="12" fill="rgba(247,243,236,0.7)"/>
-        <rect x="162" y="158" width="3" height="40" fill="rgba(247,243,236,0.7)" rx="1.5"/>
-
-        <!-- ギターシルエット（シンプル） -->
-        <ellipse cx="140" cy="88" rx="22" ry="28" fill="rgba(212,135,106,0.6)"/>
-        <ellipse cx="140" cy="55" rx="14" ry="18" fill="rgba(212,135,106,0.5)"/>
-        <rect x="138" y="30" width="4" height="12" fill="rgba(212,135,106,0.6)" rx="2"/>
-        <line x1="140" y1="62" x2="140" y2="108" stroke="rgba(247,243,236,0.4)" stroke-width="1"/>
-        <line x1="130" y1="65" x2="150" y2="65" stroke="rgba(247,243,236,0.3)" stroke-width="0.8"/>
-        <line x1="128" y1="72" x2="152" y2="72" stroke="rgba(247,243,236,0.3)" stroke-width="0.8"/>
-
-        <!-- 小さな音符の散らし -->
-        <text x="50" y="110" font-size="18" fill="rgba(247,243,236,0.5)" font-family="serif">♩</text>
-        <text x="185" y="145" font-size="14" fill="rgba(247,243,236,0.4)" font-family="serif">♪</text>
-        <text x="70" y="230" font-size="12" fill="rgba(247,243,236,0.3)" font-family="serif">♫</text>
-        <text x="195" y="200" font-size="16" fill="rgba(247,243,236,0.35)" font-family="serif">♩</text>
-
-        <!-- 葉っぱ装飾 -->
-        <path d="M30 150 Q50 120 70 150 Q50 165 30 150Z" fill="rgba(181,196,177,0.4)"/>
-        <path d="M200 240 Q215 215 235 235 Q218 252 200 240Z" fill="rgba(181,196,177,0.35)"/>
-      </svg>
-      <p class="hero-caption">words &amp; melodies for everyone</p>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <p class="hero-eyebrow">Acoustic Duo — 愛知発</p>
-    <h1 class="hero-title-ja">ことばと音楽が<br>出会う場所へ</h1>
-    <p class="hero-title-en">macaron</p>
-    <p class="hero-lead">
-      アコースティックギターとボーカルが織りなす、やさしい音楽。
-      絵本の読み聞かせから生まれた「ことば」への愛情が、
-      歌になって、あなたのもとへ届きます。
-    </p>
-    <a href="#live" class="hero-cta">ライブ情報を見る →</a>
-    <span class="page-marker">p. 01</span>
-  </div>
-</section>
-
-<!-- ABOUT -->
+<!-- ABOUT / 活動理念 -->
 <section id="about">
-  <div class="container">
-    <p class="section-label">About</p>
-    <h2 class="section-title">ふたりについて</h2>
-    <div class="divider"></div>
-    <div class="about-grid">
-      <div class="about-text">
-        <p>
-          小牧市・江南市・一宮市を中心に活動する、アコースティックデュオです。
-          アコースティックギターと、あたたかなボーカルが寄り添うように響きあいます。
-        </p>
-        <p>
-          ボーカルは、長年にわたり小中学校で司書教諭として子どもたちに絵本を届けてきた人物。
-          「絵本専門士」の資格を持ち、ことばの力と物語の持つあたたかさをよく知っています。
-          その想いが、歌声にそのまま滲みでています。
-        </p>
-        <p>
-          神社の境内、子育て支援施設、福祉の場——
-          特別なハレの場だけでなく、日常のそばにいる音楽を大切にしています。
-          「聴いてよかった」とふっと心がゆるむ時間をお届けします。
-        </p>
-      </div>
-      <div class="about-badge">
-        <div class="badge-item">
-          <span class="badge-icon">🎸</span>
-          <div class="badge-text">
-            <strong>アコースティックデュオ</strong>
-            ギター＋ボーカルの編成。生音ならではのあたたかさを大切にしています。
-          </div>
-        </div>
-        <div class="badge-item">
-          <span class="badge-icon">📚</span>
-          <div class="badge-text">
-            <strong>絵本専門士認定</strong>
-            読み聞かせの活動から生まれた「ことばへの愛」が音楽の根底にあります。
-          </div>
-        </div>
-        <div class="badge-item">
-          <span class="badge-icon">🌿</span>
-          <div class="badge-text">
-            <strong>地域に根ざした活動</strong>
-            小牧神明社・江南市トコトコをはじめ、地域の場で定期的に演奏しています。
-          </div>
-        </div>
-        <div class="badge-item">
-          <span class="badge-icon">🤝</span>
-          <div class="badge-text">
-            <strong>福祉・支援の場へも</strong>
-            施設訪問演奏も行っています。お気軽にご相談ください。
-          </div>
-        </div>
-      </div>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（サーモン） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#F0A689"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#F4B59D"/>
+        <!-- 絵本モチーフ（白） -->
+        <path d="M32 26 L20 30 L20 42 L32 39 Z" fill="#FFFFFF" opacity="0.95"/>
+        <path d="M32 26 L44 30 L44 42 L32 39 Z" fill="#FFF" opacity="0.8"/>
+        <line x1="32" y1="26" x2="32" y2="39" stroke="#F0A689" stroke-width="1.2"/>
+      </svg>
+      <span class="section-label">About</span>
+      <h2 class="section-title">マカロンについて</h2>
     </div>
-  </div>
-</section>
 
-<!-- LIVE -->
-<section id="live" class="live-section">
-  <div class="container">
-    <p class="section-label">Live</p>
-    <h2 class="section-title">ライブ・活動スケジュール</h2>
-    <div class="divider"></div>
-    <div class="live-list">
-      <div class="live-item">
-        <span class="live-date">7月 5日</span>
-        <div class="live-venue">
-          小牧神明社 境内演奏
-          <span>愛知県小牧市 ／ 14:00〜 ／ 入場無料</span>
-        </div>
-        <span class="live-tag">神社</span>
-      </div>
-      <div class="live-item">
-        <span class="live-date">7月 19日</span>
-        <div class="live-venue">
-          江南市トコトコ ミニライブ
-          <span>愛知県江南市 ／ 11:00〜 ／ 入場無料</span>
-        </div>
-        <span class="live-tag">子育て</span>
-      </div>
-      <div class="live-item">
-        <span class="live-date">8月 2日</span>
-        <div class="live-venue">
-          施設訪問演奏
-          <span>詳細はお問い合わせください</span>
-        </div>
-        <span class="live-tag">福祉</span>
-      </div>
-      <div class="live-item">
-        <span class="live-date">8月 23日</span>
-        <div class="live-venue">
-          読み聞かせ＆ミニライブ
-          <span>会場調整中 ／ 詳細は近日公開</span>
-        </div>
-        <span class="live-tag">絵本</span>
-      </div>
+    <div class="about-philosophy reveal">
+      <p class="phil-lead reveal">絵本と歌のやさしい時間。</p>
+      <p>
+        <span class="phil-strong">みんなちがって、みんな素敵。</span><br>
+        そのままのあなたが、<br>
+        笑顔でいられますように。
+      </p>
+      <p style="margin-top:1.2rem; font-size:0.9rem; opacity:0.8; font-weight:300;">
+        絵本と歌に、そんな願いを込めて活動しています。
+      </p>
     </div>
-  </div>
-</section>
 
-<!-- MEDIA -->
-<section id="media" class="media-section">
-  <div class="container">
-    <p class="section-label">Media</p>
-    <h2 class="section-title">メディア掲載</h2>
-    <div class="divider"></div>
-    <div class="media-card">
-      <span class="media-label-tag">新聞掲載</span>
-      <div class="media-body">
-        <p class="media-source">中日新聞 尾張版 ／ 2026年5月</p>
-        <p class="media-headline">「読み聞かせならどの子もホッと」<br>絵本専門士認定、障害児向けに活動</p>
-        <p class="media-desc">
-          自閉症の娘さんとのやりとりからヒントを得た、音を工夫した読み聞かせの取り組みが掲載されました。
-          ことばと音が持つ力を日々の活動の中で探り続けています。
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="contact-section">
-  <div class="container">
-    <p class="section-label">Contact</p>
-    <h2 class="section-title">お問い合わせ・出演依頼</h2>
-    <div class="divider"></div>
-    <p class="contact-note">
-      施設訪問演奏・イベント出演・読み聞かせコラボなど、
-      お気軽にお問い合わせください。
+    <p class="about-desc reveal">
+      「語りと音楽★マカロン」は、絵本の読み語りと音楽を組み合わせた活動をしています。
+      アコースティックギターとボーカルのやさしい響きと、絵本の世界が出会う場所。
+      子育て施設や福祉施設、地域のイベントなど、さまざまな場で
+      聴く人があたたかな気持ちになれる時間をお届けしています。
     </p>
-    <div class="contact-form">
-      <div class="form-row">
-        <label>お名前</label>
-        <input type="text" placeholder="山田 花子">
+  </div>
+</section>
+
+<!-- 絵本のとびら -->
+<section id="tobira">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（セージ） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#9BB997"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#AEC7AB"/>
+        <!-- とびらモチーフ（白） -->
+        <rect x="24" y="24" width="16" height="18" rx="2" fill="#FFFFFF" opacity="0.95"/>
+        <rect x="32.5" y="24" width="7.5" height="18" rx="1" fill="#FFF" opacity="0.7"/>
+        <circle cx="35.5" cy="33" r="1.2" fill="#9BB997"/>
+      </svg>
+      <span class="section-label">Program</span>
+      <h2 class="section-title">参加型おはなし会プログラム</h2>
+    </div>
+
+    <div class="tobira-hero reveal">
+      <p class="tobira-name">絵本のとびら</p>
+      <p class="tobira-tagline">〜 きいて・かんじて・うごきだす 〜</p>
+    </div>
+
+    <p class="tobira-body">
+      絵本の読み語りや音楽、ことば遊びなどを通して、
+      参加者のみなさんと一緒に物語の世界を楽しむ参加型プログラムです。
+      絵本を「聞く」だけでなく——
+    </p>
+
+    <div class="tobira-verbs reveal">
+      <span class="verb-chip">感じて</span>
+      <span class="verb-chip">考えて</span>
+      <span class="verb-chip">声を出して</span>
+      <span class="verb-chip">体を動かして</span>
+    </div>
+
+    <p class="tobira-body" style="margin-bottom:2.5rem;">
+      一人ひとりの感じ方を大切にしながら進めていきます。
+    </p>
+
+    <div class="target-box reveal">
+      <h3>こんな場・対象に合わせてアレンジします</h3>
+      <ul class="target-list">
+        <li>親子向け</li>
+        <li>子ども向け</li>
+        <li>障がいのある方向け</li>
+        <li>高齢者向け</li>
+        <li>大人向け</li>
+        <li>地域交流イベント</li>
+      </ul>
+      <p class="target-note">対象や会場に合わせて、内容をアレンジいたします。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 絵本専門士 -->
+<section id="senmonshi">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（マスタード） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#E4BD56"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#EACB74"/>
+        <!-- 星モチーフ（白） -->
+        <path d="M32 25 L34.5 31 L41 31.5 L36 35.5 L37.5 42 L32 38.3 L26.5 42 L28 35.5 L23 31.5 L29.5 31 Z" fill="#FFFFFF" opacity="0.95"/>
+      </svg>
+      <span class="section-label">Certification</span>
+      <h2 class="section-title">絵本専門士について</h2>
+    </div>
+
+    <div class="senmonshi-card reveal">
+      <span class="senmonshi-badge">絵本専門士 認定</span>
+      <p>
+        絵本専門士は、<strong>国立青少年教育振興機構</strong>が認定する絵本の専門家です。
+        絵本に関する幅広い知識や読み語りの技術を学び、
+        子どもから大人まで、多様な人々と絵本をつなぐ活動を行っています。
+      </p>
+      <p class="emphasis">
+        絵本は、子どものためだけのものではありません。
+      </p>
+      <p>
+        心を休めたり、新しい発見に出会ったり、人と人をつないだり。
+        「語りと音楽★マカロン」では、絵本専門士として学んだことを生かしながら、
+        絵本と音楽を通して、誰もが安心して参加できる温かな時間づくりを目指しています。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 活動実績 -->
+<section id="works">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（ティール） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#6AB4B3"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#84C3C2"/>
+        <!-- 音符モチーフ（白） -->
+        <ellipse cx="28" cy="39" rx="4" ry="3" fill="#FFFFFF"/>
+        <rect x="31" y="26" width="2.2" height="13" fill="#FFFFFF"/>
+        <path d="M33.2 26 Q40 24 40 29 Q37 27.5 33.2 28.5 Z" fill="#FFFFFF"/>
+      </svg>
+      <span class="section-label">Activities</span>
+      <h2 class="section-title">活動実績・活動報告</h2>
+    </div>
+
+    <p class="works-note reveal">
+      地域のさまざまな場で活動しています。
+      ご依頼・出演のご相談はお気軽にどうぞ。
+    </p>
+
+    <div class="works-grid reveal">
+      <div class="work-card">
+        <p class="work-place">小牧神明社</p>
+        <p class="work-detail">境内での演奏。地域のみなさんと過ごすひととき。</p>
       </div>
-      <div class="form-row">
-        <label>メールアドレス</label>
-        <input type="email" placeholder="hanako@example.com">
+      <div class="work-card">
+        <p class="work-place">江南市トコトコ</p>
+        <p class="work-detail">子育て支援の場でのミニライブ・おはなし会。</p>
       </div>
-      <div class="form-row">
-        <label>お問い合わせ内容</label>
-        <textarea placeholder="出演依頼・ご質問など、お気軽にどうぞ。"></textarea>
+      <div class="work-card">
+        <p class="work-place">福祉施設</p>
+        <p class="work-detail">訪問演奏・読み語り。あたたかな時間をお届け。</p>
       </div>
-      <button class="btn-submit">送 信</button>
+      <div class="work-card">
+        <p class="work-place">地域交流イベント</p>
+        <p class="work-detail">親子から高齢者まで、世代をこえて楽しめる会。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- お問い合わせ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（テラコッタ） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#E4AA84"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#EBBC9C"/>
+        <!-- 手紙モチーフ（白） -->
+        <rect x="22" y="28" width="20" height="13" rx="2" fill="#FFFFFF" opacity="0.95"/>
+        <path d="M22 30 L32 36 L42 30" fill="none" stroke="#E4AA84" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="section-label">Contact</span>
+      <h2 class="section-title">お問い合わせ</h2>
+    </div>
+
+    <p class="contact-lead reveal">
+      おはなし会・イベント出演・施設訪問など、
+      お気軽にお問い合わせください。
+      対象や会場に合わせてご相談に応じます。
+    </p>
+
+    <div class="contact-methods reveal">
+      <a href="mailto:macaron_team@yahoo.co.jp" class="contact-btn btn-mail">
+        ✉ メールでのお問い合わせ
+      </a>
+      <a href="#" class="contact-btn btn-insta">
+        ◎ Instagram
+      </a>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-logo">macaron</span>
-  <span>© 2026 macaron. All rights reserved.</span>
+  <p class="footer-logo">macaron</p>
+  <p class="footer-copy">語りと音楽★マカロン &nbsp;|&nbsp; © 2026 macaron</p>
 </footer>
 
+<script>
+  (function () {
+    var reduce = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 理念のリード文を一文字ずつ <span class="ch"> で包む
+    var lead = document.querySelector('.phil-lead');
+    if (lead && !reduce) {
+      var text = lead.textContent;
+      lead.textContent = '';
+      for (var i = 0; i < text.length; i++) {
+        var span = document.createElement('span');
+        span.className = 'ch';
+        span.textContent = text[i];
+        span.style.animationDelay = (i * 0.05) + 's';
+        lead.appendChild(span);
+      }
+    }
+
+    var revealEls = document.querySelectorAll('.reveal');
+
+    if (reduce || !('IntersectionObserver' in window)) {
+      // 動きを減らす設定なら、すべて即表示
+      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(function (el) { obs.observe(el); });
+
+    // スクロールでナビの背景を濃くする
+    var navEl = document.querySelector('nav');
+    if (navEl) {
+      var onScroll = function () {
+        if (window.scrollY > 40) {
+          navEl.classList.add('scrolled');
+        } else {
+          navEl.classList.remove('scrolled');
+        }
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+  })();
+</script>
 </body>
 </html>
