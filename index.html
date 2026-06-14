@@ -483,6 +483,17 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(240,166,137,0.3);
   }
+  /* 埋め込みが表示できたときは誘導カードを小さく控えめに */
+  .insta-fallback--mini {
+    box-shadow: none;
+    background: transparent;
+    padding: 1.2rem 1rem 0;
+    margin-top: 1.5rem;
+  }
+  .insta-fallback--mini .insta-fallback-text {
+    font-size: 0.88rem;
+    margin-bottom: 0.9rem;
+  }
   .media-strip {
     background: var(--terra);
     color: white;
@@ -820,22 +831,15 @@
     </p>
 
     <!-- 個別投稿の埋め込み枠。Akiさんの見せたい投稿URLをここに入れます。 -->
-    <div class="insta-embeds reveal" id="insta-embeds">
-      <!--
-        【写真投稿の埋め込み方】
-        1. Instagramで見せたい投稿を開く
-        2. 「…」メニュー →「埋め込み」→ コードをコピー
-        3. 下の <blockquote> ブロックをコピーした内容に差し替える
-        （または投稿URLを教えてもらえれば、ちさとさんが設定します）
+    <!-- 投稿の埋め込みがここに入る（スプレッドシートの「インスタ投稿」シートから読み込み） -->
+    <div class="insta-embeds reveal" id="insta-embeds"></div>
 
-        例として、プロフィールへの誘導カードを置いています。
-      -->
-      <div class="insta-fallback">
-        <p class="insta-fallback-text">最新の投稿は Instagram でご覧いただけます</p>
-        <a href="https://www.instagram.com/macaron772/" target="_blank" rel="noopener noreferrer" class="insta-fallback-btn">
-          ◎ @macaron772 をひらく
-        </a>
-      </div>
+    <!-- 最後の砦：投稿が無い・読み込み失敗・埋め込みエラー時に必ず表示される誘導カード -->
+    <div class="insta-fallback reveal" id="insta-fallback">
+      <p class="insta-fallback-text">活動の様子は Instagram でご覧いただけます</p>
+      <a href="https://www.instagram.com/macaron772/" target="_blank" rel="noopener noreferrer" class="insta-fallback-btn">
+        ◎ @macaron772 をひらく
+      </a>
     </div>
   </div>
 </section>
@@ -967,6 +971,61 @@
         .catch(function () {
           // 通信失敗時も既定の実績を出して、空っぽにしない
           renderWorks(fallbackWorks);
+        });
+    }
+
+    // ===== Instagram投稿をスプレッドシートから読み込んで埋め込む =====
+    var instaWrap = document.getElementById('insta-embeds');
+    var instaFallback = document.getElementById('insta-fallback');
+
+    function loadInstagramScript() {
+      // 公式の埋め込みスクリプトを一度だけ読み込む
+      if (window.instgrm) {
+        window.instgrm.Embeds.process();
+        return;
+      }
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.instagram.com/embed.js';
+      s.onload = function () {
+        if (window.instgrm) window.instgrm.Embeds.process();
+      };
+      document.body.appendChild(s);
+    }
+
+    function renderInsta(items) {
+      if (!instaWrap) return;
+      // 有効なInstagram URLだけ残す
+      var urls = (items || []).map(function (it) { return it.url; })
+        .filter(function (u) { return /^https?:\/\/(www\.)?instagram\.com\//i.test(u); });
+
+      if (urls.length === 0) {
+        // 投稿が無ければ誘導カードだけ残す（フォールバックはそのまま表示）
+        return;
+      }
+
+      // 埋め込みブロックを組み立てる
+      var html = '';
+      urls.forEach(function (u) {
+        html += '<blockquote class="instagram-media" data-instgrm-permalink="' +
+                u + '" data-instgrm-version="14"></blockquote>';
+      });
+      instaWrap.innerHTML = html;
+
+      // 埋め込みが出せたので誘導カードは控えめに（下に小さく残す）
+      if (instaFallback) instaFallback.classList.add('insta-fallback--mini');
+
+      loadInstagramScript();
+    }
+
+    if (GAS_API_URL) {
+      fetch(GAS_API_URL + '?type=insta')
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.ok) renderInsta(data.items);
+        })
+        .catch(function () {
+          // 失敗時は何もしない＝誘導カードがそのまま残る
         });
     }
 
