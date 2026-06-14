@@ -158,6 +158,7 @@
   #tobira   { background: rgba(155,185,151,0.13); }
   #senmonshi{ background: linear-gradient(180deg, rgba(228,189,86,0.12), rgba(228,189,86,0.05)); }
   #works    { background: rgba(106,180,179,0.12); }
+  #insta    { background: linear-gradient(180deg, rgba(240,166,137,0.10), rgba(240,166,137,0.04)); }
   #contact  { background: rgba(228,170,132,0.13); }
 
   .section-head { text-align: center; margin-bottom: 3rem; }
@@ -192,12 +193,14 @@
   #tobira   .section-title::before, #tobira   .section-title::after { background: var(--sage); }
   #senmonshi .section-title::before, #senmonshi .section-title::after { background: var(--mustard); }
   #works    .section-title::before, #works    .section-title::after { background: var(--teal); }
+  #insta    .section-title::before, #insta    .section-title::after { background: var(--salmon); }
   #contact  .section-title::before, #contact  .section-title::after { background: var(--terra); }
   /* セクションごとのアクセント色 */
   #about    .section-label { color: var(--salmon); }
   #tobira   .section-label { color: var(--sage); }
   #senmonshi .section-label { color: var(--mustard); }
   #works    .section-label { color: var(--teal); }
+  #insta    .section-label { color: var(--salmon); }
   #contact  .section-label { color: var(--terra); }
 
   /* マカロン型の小さな飾り */
@@ -398,6 +401,87 @@
     opacity: 0.78;
     font-weight: 400;
     line-height: 1.8;
+  }
+  .work-card .work-date {
+    font-size: 0.82rem;
+    color: var(--teal);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+  .work-card .work-cat {
+    display: inline-block;
+    font-size: 0.74rem;
+    color: var(--teal);
+    border: 1px solid var(--sage);
+    border-radius: 999px;
+    padding: 0.1rem 0.7rem;
+    margin-top: 0.6rem;
+  }
+  .work-card .work-link {
+    display: inline-block;
+    margin-top: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--teal);
+    text-decoration: none;
+    border-bottom: 1px solid var(--teal);
+    padding-bottom: 0.1rem;
+    transition: color 0.2s, border-color 0.2s, gap 0.2s;
+  }
+  .work-card .work-link:hover {
+    color: var(--salmon);
+    border-bottom-color: var(--salmon);
+  }
+  /* 読み込み中・エラー・データ無しの表示 */
+  .works-loading, .works-empty, .works-error {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+    opacity: 0.7;
+  }
+  .works-error { color: var(--salmon); }
+
+  /* Instagram セクション */
+  .insta-embeds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .insta-embeds .instagram-media {
+    margin: 0 !important;
+  }
+  .insta-fallback {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(240,166,137,0.15);
+    width: 100%;
+    max-width: 440px;
+  }
+  .insta-fallback-text {
+    font-size: 1rem;
+    margin-bottom: 1.4rem;
+    opacity: 0.85;
+  }
+  .insta-fallback-btn {
+    display: inline-block;
+    background: var(--salmon);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .insta-fallback-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(240,166,137,0.3);
   }
   .media-strip {
     background: var(--terra);
@@ -705,22 +789,52 @@
       ご依頼・出演のご相談はお気軽にどうぞ。
     </p>
 
-    <div class="works-grid reveal">
-      <div class="work-card">
-        <p class="work-place">小牧神明社</p>
-        <p class="work-detail">境内での演奏。地域のみなさんと過ごすひととき。</p>
-      </div>
-      <div class="work-card">
-        <p class="work-place">江南市トコトコ</p>
-        <p class="work-detail">子育て支援の場でのミニライブ・おはなし会。</p>
-      </div>
-      <div class="work-card">
-        <p class="work-place">福祉施設</p>
-        <p class="work-detail">訪問演奏・読み語り。あたたかな時間をお届け。</p>
-      </div>
-      <div class="work-card">
-        <p class="work-place">地域交流イベント</p>
-        <p class="work-detail">親子から高齢者まで、世代をこえて楽しめる会。</p>
+    <!-- 活動実績：スプレッドシート（GAS）から自動で読み込まれます -->
+    <div class="works-grid reveal" id="works-grid">
+      <!-- データが入るまでの表示 -->
+      <div class="works-loading" id="works-loading">活動実績を読み込んでいます…</div>
+    </div>
+  </div>
+</section>
+
+<!-- Instagram -->
+<section id="insta">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <svg class="section-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <!-- マカロン本体（サーモン） -->
+        <ellipse cx="32" cy="38" rx="24" ry="17" fill="#F0A689"/>
+        <ellipse cx="32" cy="33" rx="24" ry="13" fill="#F4B59D"/>
+        <!-- カメラモチーフ（白） -->
+        <rect x="22" y="28" width="20" height="15" rx="3" fill="#FFFFFF" opacity="0.95"/>
+        <circle cx="32" cy="35.5" r="4.5" fill="none" stroke="#F0A689" stroke-width="2"/>
+        <circle cx="38.5" cy="31" r="1.2" fill="#F0A689"/>
+      </svg>
+      <span class="section-label">Instagram</span>
+      <h2 class="section-title">日々のようす</h2>
+    </div>
+
+    <p class="works-note reveal">
+      活動の様子は Instagram でも発信しています。
+      最新のお知らせや写真は、ぜひこちらから。
+    </p>
+
+    <!-- 個別投稿の埋め込み枠。Akiさんの見せたい投稿URLをここに入れます。 -->
+    <div class="insta-embeds reveal" id="insta-embeds">
+      <!--
+        【写真投稿の埋め込み方】
+        1. Instagramで見せたい投稿を開く
+        2. 「…」メニュー →「埋め込み」→ コードをコピー
+        3. 下の <blockquote> ブロックをコピーした内容に差し替える
+        （または投稿URLを教えてもらえれば、ちさとさんが設定します）
+
+        例として、プロフィールへの誘導カードを置いています。
+      -->
+      <div class="insta-fallback">
+        <p class="insta-fallback-text">最新の投稿は Instagram でご覧いただけます</p>
+        <a href="https://www.instagram.com/macaron772/" target="_blank" rel="noopener noreferrer" class="insta-fallback-btn">
+          ◎ @macaron772 をひらく
+        </a>
       </div>
     </div>
   </div>
@@ -769,6 +883,92 @@
   (function () {
     var reduce = window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ===== 活動実績をスプレッドシート（GAS）から読み込む =====
+    // ▼ ここに GAS ウェブアプリのURLを貼る（未設定なら既定の実績を表示）
+    var GAS_API_URL = 'https://script.google.com/macros/s/AKfycby8tO7ow1DOh-K4uuXrvSSqMQlv9JVkVSde0nhP8stN68c2paPZcqpUUHCG8Q4Yq0wF/exec';
+
+    var grid = document.getElementById('works-grid');
+    var loading = document.getElementById('works-loading');
+
+    // 既定の活動実績（GAS未設定時やエラー時に表示するフォールバック）
+    var fallbackWorks = [
+      { date: '', title: '小牧神明社',   body: '境内での演奏。地域のみなさんと過ごすひととき。', category: '神社', link: 'https://www.instagram.com/macaron772/' },
+      { date: '', title: '江南市トコトコ', body: '子育て支援の場でのミニライブ・おはなし会。',     category: '子育て', link: '' },
+      { date: '', title: '福祉施設',     body: '訪問演奏・読み語り。あたたかな時間をお届け。',   category: '福祉', link: '' },
+      { date: '', title: '地域交流イベント', body: '親子から高齢者まで、世代をこえて楽しめる会。', category: '地域', link: '' }
+    ];
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // 日付を「2026年7月5日」の形に整える。
+    // タイムゾーンのズレを避けるため、Dateの計算に頼らず文字列から数字を読む。
+    function formatDateJa(value) {
+      if (!value) return '';
+      var s = String(value).trim();
+      // 既に「年」を含む日本語形式ならそのまま返す
+      if (s.indexOf('年') !== -1) return s;
+
+      // 「2026-07-05」「2026/7/5」のような数値形式から年月日を取り出す
+      var m = s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+      if (m) {
+        return parseInt(m[1],10) + '年' + parseInt(m[2],10) + '月' + parseInt(m[3],10) + '日';
+      }
+
+      // 「Sun Jul 05 2026 ...」のような英語形式から取り出す
+      var months = { Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12 };
+      var m2 = s.match(/([A-Za-z]{3})\s+(\d{1,2})\s+(\d{4})/);
+      if (m2 && months[m2[1]]) {
+        return parseInt(m2[3],10) + '年' + months[m2[1]] + '月' + parseInt(m2[2],10) + '日';
+      }
+
+      // どれにも当てはまらなければ元の文字列をそのまま
+      return s;
+    }
+
+    function renderWorks(items) {
+      if (!grid) return;
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<div class="works-empty">活動実績は準備中です。</div>';
+        return;
+      }
+      var html = '';
+      items.forEach(function (it) {
+        html += '<div class="work-card">';
+        if (it.date)  html += '<p class="work-date">' + escapeHtml(formatDateJa(it.date)) + '</p>';
+        if (it.title) html += '<p class="work-place">' + escapeHtml(it.title) + '</p>';
+        if (it.body)  html += '<p class="work-detail">' + escapeHtml(it.body) + '</p>';
+        if (it.category) html += '<span class="work-cat">' + escapeHtml(it.category) + '</span>';
+        // リンク列にhttp(s)のURLがあればボタンを出す（安全なURLのみ）
+        if (it.link && /^https?:\/\//i.test(it.link)) {
+          html += '<a class="work-link" href="' + escapeHtml(it.link) + '" target="_blank" rel="noopener noreferrer">様子を見る →</a>';
+        }
+        html += '</div>';
+      });
+      grid.innerHTML = html;
+    }
+
+    if (!GAS_API_URL) {
+      // URL未設定：既定の実績を表示
+      renderWorks(fallbackWorks);
+    } else {
+      fetch(GAS_API_URL)
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.ok) {
+            renderWorks(data.items);
+          } else {
+            renderWorks(fallbackWorks);
+          }
+        })
+        .catch(function () {
+          // 通信失敗時も既定の実績を出して、空っぽにしない
+          renderWorks(fallbackWorks);
+        });
+    }
 
     // 理念のリード文を一文字ずつ <span class="ch"> で包む
     var lead = document.querySelector('.phil-lead');
